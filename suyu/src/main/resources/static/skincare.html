@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare India | Organic Skincare Collection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        INDIA'S FIRST ORGANIC SUPERFOODS BASED SKIN & HAIR CARE | SHOP NOW
+    </div>
+
+    <!-- Header -->
+    <header id="main-header" class="scrolled"> <!-- Force scrolled state for visibility -->
+        <div class="logo">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                <img src="images/logo.png" alt="GLOWCARE Logo">
+                <h1>GLOWCARE</h1>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Collection <i class="fa-solid fa-chevron-down"
+                            style="font-size: 0.6rem; margin-left: 2px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="skincare.html">Skin Care</a>
+                        <a href="haircare.html">Hair Care</a>
+                    </div>
+                </li>
+                <li><a href="doctor.html">Consult</a></li>
+                <li><a href="index.html#open-ritual">Ritual</a></li>
+                <li><a href="index.html#open-skinsync"><i class="fa-solid fa-dna"></i> Skin-Sync</a></li>
+                <li><a href="lab.html">Glow Lab</a></li>
+            </ul>
+        </nav>
+        <div class="header-icons">
+            <a href="javascript:void(0)" id="search-btn"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+            <a href="javascript:void(0)" id="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span
+                    class="cart-count">0</span></a>
+        </div>
+    </header>
+
+    <!-- Page Title -->
+    <section class="section bg-light" style="padding-top: 150px; padding-bottom: 50px;">
+        <div class="section-title">
+            <span class="serif" style="color: var(--accent-dark); font-size: 1.2rem;">Collection</span>
+            <h2>Organic Skincare</h2>
+            <div class="divider"></div>
+            <p>Harnessing the 6000x antioxidant power of Astaxanthin and the healing properties of ancient Reishi
+                mushroom for a radiant, protected glow.</p>
+        </div>
+    </section>
+
+    <!-- Products Grid -->
+    <section class="section bg-white">
+        <div class="container product-grid">
+            <!-- Product 1: Face Serum -->
+            <div class="product-card" data-id="101" data-name="Face Serum" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/face-serum.png" alt="Face Serum" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Serum</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+            <!-- Product 2: Face Mask -->
+            <div class="product-card" data-id="102" data-name="Face Mask" data-price="599">
+                <div class="product-image-wrapper">
+                    <img src="images/face-mask.png" alt="Face Mask" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Mask</h3>
+                    <p class="price">Rs. 599.00</p>
+                </div>
+            </div>
+            <!-- Product 3: Vitamin C Toner -->
+            <div class="product-card" data-id="103" data-name="Vitamin C Toner" data-price="699">
+                <div class="product-image-wrapper">
+                    <img src="images/vitamin-c-toner.png" alt="Vitamin C Toner" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Vitamin C Toner</h3>
+                    <p class="price">Rs. 699.00</p>
+                </div>
+            </div>
+            <!-- Product 4: Face Wash -->
+            <div class="product-card" data-id="1" data-name="Face Wash" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/face-wash.png" alt="Face Wash" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Wash</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+            <!-- Product 5: Face Cream -->
+            <div class="product-card" data-id="2" data-name="Face Cream" data-price="449">
+                <div class="product-image-wrapper">
+                    <img src="images/face-cream.png" alt="Face Cream" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Cream</h3>
+                    <p class="price">Rs. 449.00</p>
+                </div>
+            </div>
+            <!-- Product 6: Facial Oil -->
+            <div class="product-card" data-id="3" data-name="Facial Oil" data-price="599">
+                <div class="product-image-wrapper">
+                    <img src="images/facial-oil.png" alt="Facial Oil" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Facial Oil</h3>
+                    <p class="price">Rs. 599.00</p>
+                </div>
+            </div>
+            <!-- Product 7: Face Moisturizer -->
+            <div class="product-card" data-id="4" data-name="Face Moisturizer" data-price="699">
+                <div class="product-image-wrapper">
+                    <img src="images/face-moisturizer.png" alt="Face Moisturizer" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Moisturizer</h3>
+                    <p class="price">Rs. 699.00</p>
+                </div>
+            </div>
+            <!-- Product 8: Sunscreen -->
+            <div class="product-card" data-id="6" data-name="Sunscreen" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/sunscreen.png" alt="Sunscreen" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Sunscreen</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cart Sidebar (Same as index) -->
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
+            <h3>Your Cart</h3>
+            <button id="close-cart" class="close-btn">&times;</button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <!-- Items go here -->
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="total-price">Rs. 0.00</span>
+            </div>
+            <button class="btn checkout-btn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="search-overlay">
+        <button id="close-search" class="close-btn">&times;</button>
+        <div class="search-content">
+            <h2>Search GlowCare</h2>
+            <input type="text" id="search-input" placeholder="What are you looking for?">
+            <div id="search-results" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="background: #1a1a1a; color: white; padding: 60px 0 20px;">
+        <div class="container footer-grid"
+            style="max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; padding: 0 20px;">
+            <div>
+                <h3>GLOWCARE</h3>
+                <p style="opacity: 0.7; font-size: 0.9rem; margin-top: 20px;">Redefining beauty with organic superfoods
+                    and ancient botanical wisdom.</p>
+            </div>
+            <div>
+                <h4>Explore</h4>
+                <ul style="list-style: none; margin-top: 20px;">
+                    <li><a href="skincare.html" style="color: white; text-decoration: none; opacity: 0.7;">Skin Care</a>
+                    </li>
+                    <li><a href="haircare.html" style="color: white; text-decoration: none; opacity: 0.7;">Hair Care</a>
+                    </li>
+                    <li><a href="lab.html" style="color: white; text-decoration: none; opacity: 0.7;">Glow Lab</a></li>
+                    <li><a href="dashboard.html" style="color: white; text-decoration: none; opacity: 0.7;">Agent
+                            Control</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>About</h4>
+                <ul style="list-style: none; margin-top: 20px;">
+                    <li><a href="#" style="color: white; text-decoration: none; opacity: 0.7;">Our Story</a></li>
+                    <li><a href="#" style="color: white; text-decoration: none; opacity: 0.7;">Superfoods</a></li>
+                    <li><a href="#" style="color: white; text-decoration: none; opacity: 0.7;">Sustainability</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Contact</h4>
+                <ul style="list-style: none; margin-top: 20px;">
+                    <li style="opacity: 0.7; font-size: 0.9rem;">Email: hello@glowcare.in</li>
+                    <li style="opacity: 0.7; font-size: 0.9rem; margin-top: 10px;">Phone: +91 98765 43210</li>
+                </ul>
+            </div>
+        </div>
+        <div
+            style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 60px; padding-top: 20px; text-align: center; font-size: 0.8rem; opacity: 0.5;">
+            &copy; 2026 GLOWCARE Bharat. All Organic. All Superfood.
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Ensure scroll state on dynamic page
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('main-header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else if (!header.classList.contains('active-modal')) { // Only remove if no modal is active
+                header.classList.add('scrolled'); // Force keep scrolled for product pages
+            }
+        });
+    </script>
+</body>
+
+</html>

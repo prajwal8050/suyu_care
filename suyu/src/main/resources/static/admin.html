@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare | Super Admin Control</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --admin-primary: #1a1a2e;
+            --admin-secondary: #16213e;
+            --admin-accent: #e94560;
+            --admin-text: #e1e1e1;
+            --danger: #ff4d4d;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+        }
+
+        body {
+            background-color: var(--admin-primary);
+            color: var(--admin-text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Admin Login Overlay */
+        #admin-auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0f3460;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-auth-card {
+            background: var(--admin-secondary);
+            padding: 50px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-auth-card h1 {
+            color: var(--admin-accent);
+            margin-bottom: 20px;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+
+        .admin-auth-card p {
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--admin-secondary);
+            padding: 40px 0;
+            position: fixed;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 30px 40px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .sidebar-header h2 {
+            font-size: 1.5rem;
+            color: var(--admin-accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 18px 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: 0.3s;
+            color: #999;
+        }
+
+        .sidebar-menu li:hover,
+        .sidebar-menu li.active {
+            background: rgba(233, 69, 96, 0.1);
+            color: var(--admin-accent);
+            border-left: 4px solid var(--admin-accent);
+        }
+
+        .sidebar-menu li i {
+            width: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 50px;
+            max-width: calc(100% - 280px);
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        /* Admin Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .stats-card {
+            background: var(--admin-secondary);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: 0.3s;
+        }
+
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-card .title {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .stats-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stats-card.revenue .value {
+            color: var(--success);
+        }
+
+        /* Tables */
+        .page-section {
+            display: none;
+            background: var(--admin-secondary);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 20px 15px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+            color: #888;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-active {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .badge-blocked {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-block {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-unblock {
+            background: var(--success);
+            color: white;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--admin-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--admin-secondary);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-accent);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Super Admin Login Overlay -->
+    <div id="admin-auth-overlay">
+        <div class="admin-auth-card">
+            <i class="fa-solid fa-shield-halved"
+                style="font-size: 4rem; color: var(--admin-accent); margin-bottom: 25px;"></i>
+            <h1>Super Admin</h1>
+            <p>Protected Management Gateway</p>
+            <form id="admin-login-form">
+                <div class="form-group" style="text-align: left; margin-bottom: 20px;">
+                    <label style="color: #999; display: block; margin-bottom: 8px;">Master Email</label>
+                    <input type="email" id="admin-email" placeholder="admin@gmail.com" required
+                        style="width: 100%; padding: 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; border-radius: 10px; outline: none;">
+                </div>
+                <div class="form-group" style="text-align: left; margin-bottom: 30px;">
+                    <label style="color: #999; display: block; margin-bottom: 8px;">Security Key</label>
+                    <input type="password" id="admin-password" placeholder="••••••••" required
+                        style="width: 100%; padding: 15px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; border-radius: 10px; outline: none;">
+                </div>
+                <button type="submit" class="btn"
+                    style="width: 100%; background: var(--admin-accent); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: 600; cursor: pointer;">Initialize
+                    Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>GlowCare Admin</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active" onclick="switchTab('overview')"><i class="fa-solid fa-gauge"></i> Overview</li>
+            <li onclick="switchTab('customers')"><i class="fa-solid fa-users"></i> Customers</li>
+            <li onclick="switchTab('agents')"><i class="fa-solid fa-user-tie"></i> Agents</li>
+            <li onclick="switchTab('products')"><i class="fa-solid fa-box"></i> Products</li>
+            <li onclick="switchTab('specialists')"><i class="fa-solid fa-user-doctor"></i> Specialists</li>
+            <li onclick="switchTab('revenue')"><i class="fa-solid fa-money-bill-trend-up"></i> Sales & Revenue</li>
+            <li onclick="switchTab('logs')"><i class="fa-solid fa-clock-rotate-left"></i> System Logs</li>
+            <li onclick="adminLogout()" style="margin-top: 50px; color: var(--danger);"><i
+                    class="fa-solid fa-power-off"></i> Safe Logout</li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="dashboard-header">
+            <h1>Control Panel</h1>
+            <div class="admin-profile" style="display: flex; align-items: center; gap: 15px;">
+                <span id="current-admin-name" style="font-weight: 600;">Super User</span>
+                <div
+                    style="width: 45px; height: 45px; background: var(--admin-accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                    SA</div>
+            </div>
+        </div>
+
+        <div id="overview-tab" class="page-section active">
+            <div class="stats-grid">
+                <div class="stats-card revenue">
+                    <div class="title">Total Gross Revenue</div>
+                    <div class="value" id="admin-stat-revenue">Rs. 0</div>
+                </div>
+                <div class="stats-card">
+                    <div class="title">Total Customers</div>
+                    <div class="value" id="admin-stat-customers">0</div>
+                </div>
+                <div class="stats-card">
+                    <div class="title">Total Agents</div>
+                    <div class="value" id="admin-stat-agents">0</div>
+                </div>
+                <div class="stats-card">
+                    <div class="title">Orders Fulfilled</div>
+                    <div class="value" id="admin-stat-orders">0</div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h3>Global Activity Monitoring</h3>
+            </div>
+            <div
+                style="background: rgba(255, 255, 255, 0.02); padding: 25px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                <canvas id="activityChart" style="width: 100%; height: 300px; color: white;">[Activity Visualization
+                    Loading...]</canvas>
+            </div>
+        </div>
+
+        <!-- Customer Management -->
+        <div id="customers-tab" class="page-section">
+            <div class="section-header">
+                <h2>Customer Directory</h2>
+                <div class="search-box">
+                    <input type="text" placeholder="Search Customer..."
+                        style="padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: transparent; color: white;">
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Email</th>
+                        <th>Joined Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-customer-table">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Agent Management -->
+        <div id="agents-tab" class="page-section">
+            <div class="section-header">
+                <h2>Network Agents</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Agent Name</th>
+                        <th>Official ID</th>
+                        <th>Status</th>
+                        <th>Access Level</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-agent-table">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Product Management -->
+        <div id="products-tab" class="page-section">
+            <div class="section-header">
+                <h2>Product Catalog</h2>
+                <button class="btn" onclick="toggleAddProductForm()"
+                    style="background: var(--admin-accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">+
+                    Add New Product</button>
+            </div>
+
+            <!-- Add Product Form -->
+            <div id="add-product-form"
+                style="display: none; background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                <form id="new-product-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Product Name</label>
+                            <input type="text" id="prod-name" required
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Price (Rs.)</label>
+                            <input type="number" id="prod-price" required
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Product Photo</label>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <div id="image-preview"
+                                    style="width: 80px; height: 80px; background: #0b0b1a; border: 1px dashed #444; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <i class="fa-solid fa-image" style="color: #333; font-size: 1.5rem;"></i>
+                                </div>
+                                <div style="flex: 1;">
+                                    <input type="file" id="prod-file-upload" accept="image/*" style="display: none;">
+                                    <button type="button" onclick="document.getElementById('prod-file-upload').click()"
+                                        style="background: #333; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-upload"></i> Take from Gallery / Upload
+                                    </button>
+                                    <input type="text" id="prod-image" placeholder="Or enter Image URL..."
+                                        style="width: 100%; margin-top: 10px; padding: 10px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px; font-size: 0.8rem;">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Category</label>
+                            <select id="prod-category" required
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
+                                <option value="skincare">Skincare</option>
+                                <option value="haircare">Haircare</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 15px;">
+                        <button type="submit" class="btn"
+                            style="background: var(--success); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: 600;">Save
+                            Product</button>
+                        <button type="button" class="btn" onclick="toggleAddProductForm()"
+                            style="background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Preview</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-product-table">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Specialist Management -->
+        <div id="specialists-tab" class="page-section">
+            <div class="section-header">
+                <h2>Our Specialists</h2>
+                <button class="btn" onclick="toggleAddSpecialistForm()"
+                    style="background: var(--admin-accent); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">+
+                    Add Specialist</button>
+            </div>
+
+            <!-- Add Specialist Form -->
+            <div id="add-specialist-form"
+                style="display: none; background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 12px; margin-bottom: 30px; border: 1px solid rgba(255, 255, 255, 0.05);">
+                <form id="new-specialist-form">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Doctor Name</label>
+                            <input type="text" id="doc-name" required placeholder="e.g. Dr. Sarah"
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Designation</label>
+                            <input type="text" id="doc-designation" required placeholder="e.g. Dermatologist"
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Experience (Years)</label>
+                            <input type="number" id="doc-exp" required placeholder="e.g. 5"
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Profile Photo</label>
+                            <div style="display: flex; gap: 15px; align-items: center;">
+                                <div id="doc-image-preview"
+                                    style="width: 60px; height: 60px; background: #0b0b1a; border: 1px dashed #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                                    <i class="fa-solid fa-user-doctor" style="color: #333; font-size: 1.2rem;"></i>
+                                </div>
+                                <input type="file" id="doc-file-upload" accept="image/*" style="display: none;">
+                                <button type="button" onclick="document.getElementById('doc-file-upload').click()"
+                                    style="background: #444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
+                                    Upload Photo
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px; display: flex; gap: 15px;">
+                        <button type="submit" class="btn"
+                            style="background: var(--success); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-weight: 600;">Save
+                            Specialist</button>
+                        <button type="button" class="btn" onclick="toggleAddSpecialistForm()"
+                            style="background: rgba(255,255,255,0.1); color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer;">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Experience</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-doc-table">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Revenue Analysis -->
+        <div id="revenue-tab" class="page-section">
+            <div class="section-header">
+                <h2>Product Revenue Stream</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product Name</th>
+                        <th>Units Sold</th>
+                        <th>Revenue Generated</th>
+                        <th>Growth</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-revenue-table">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Logs -->
+        <div id="logs-tab" class="page-section">
+            <div class="section-header">
+                <h2>System Audit Logs</h2>
+            </div>
+            <div id="audit-logs"
+                style="font-family: 'Courier New', Courier, monospace; font-size: 0.85rem; color: #888; background: #0b0b1a; padding: 20px; border-radius: 10px; max-height: 400px; overflow-y: auto;">
+                <div>[SYSTEM] Initializing Audit Trail...</div>
+                <div>[AUTH] Super Admin Session Started at 2026-02-26 10:05:21</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // MASTER AUTH
+        const ADMIN_CREDENTIALS = {
+            email: "admin@gmail.com",
+            password: "admin@123"
+        };
+        const AGENT_CREDENTIALS = {
+            email: "agent@gmail.com",
+            password: "agent@123"
+        };
+
+        window.onload = function () {
+            const isAuth = sessionStorage.getItem('glowcare_admin_auth');
+            const isAgent = sessionStorage.getItem('glowcare_agent_auth');
+
+            if (isAuth === 'true' || isAgent === 'true') {
+                document.getElementById('admin-auth-overlay').style.display = 'none';
+                if (isAgent === 'true') {
+                    document.getElementById('current-admin-name').textContent = "Official Agent";
+                    document.querySelector('.admin-profile div').textContent = "AG";
+                    // Agents can't see logs or customers in this demo
+                    document.querySelector('[onclick="switchTab(\'customers\')"]').style.display = 'none';
+                    document.querySelector('[onclick="switchTab(\'logs\')"]').style.display = 'none';
+                }
+                refreshDashboard();
+            }
+        };
+
+        document.getElementById('admin-login-form').onsubmit = function (e) {
+            e.preventDefault();
+            const email = document.getElementById('admin-email').value;
+            const pass = document.getElementById('admin-password').value;
+
+            if (email === ADMIN_CREDENTIALS.email && pass === ADMIN_CREDENTIALS.password) {
+                sessionStorage.setItem('glowcare_admin_auth', 'true');
+                document.getElementById('admin-auth-overlay').style.display = 'none';
+                logActivity('Super Admin Login Successful');
+                refreshDashboard();
+            } else if (email === AGENT_CREDENTIALS.email && pass === AGENT_CREDENTIALS.password) {
+                sessionStorage.setItem('glowcare_agent_auth', 'true');
+                document.getElementById('admin-auth-overlay').style.display = 'none';
+                logActivity('Agent Login Successful');
+                location.reload(); // Reload to apply view restrictions
+            } else {
+                alert('ACCESS DENIED: Invalid Security Credentials');
+                logActivity('FAILED LOGIN ATTEMPT: ' + email);
+            }
+        };
+
+        function adminLogout() {
+            sessionStorage.removeItem('glowcare_admin_auth');
+            sessionStorage.removeItem('glowcare_agent_auth');
+            location.reload();
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+
+            // Find the clicked menu item by its onclick attribute's tabId
+            const menuItems = document.querySelectorAll('.sidebar-menu li');
+            menuItems.forEach(item => {
+                if (item.getAttribute('onclick').includes(tabId)) {
+                    item.classList.add('active');
+                }
+            });
+
+            document.getElementById(tabId + '-tab').classList.add('active');
+            refreshDashboard();
+        }
+
+        function toggleAddProductForm() {
+            const form = document.getElementById('add-product-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            if (form.style.display === 'none') {
+                // Reset preview on close
+                document.getElementById('image-preview').innerHTML = '<i class="fa-solid fa-image" style="color: #333; font-size: 1.5rem;"></i>';
+            }
+        }
+
+        // Preview Logic
+        document.getElementById('prod-file-upload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    document.getElementById('image-preview').innerHTML = `<img src="${event.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    // Clear the URL input if a file is chosen to avoid confusion
+                    document.getElementById('prod-image').value = "";
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // URL Preview Sync
+        document.getElementById('prod-image').addEventListener('input', function (e) {
+            if (e.target.value) {
+                document.getElementById('image-preview').innerHTML = `<img src="${e.target.value}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://via.placeholder.com/80?text=Error'">`;
+            }
+        });
+
+        document.getElementById('new-product-form').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('prod-name').value;
+            const price = parseFloat(document.getElementById('prod-price').value);
+            const category = document.getElementById('prod-category').value;
+            let imageUrl = document.getElementById('prod-image').value;
+
+            // Check if file is uploaded
+            const fileInput = document.getElementById('prod-file-upload');
+            if (fileInput.files && fileInput.files[0]) {
+                imageUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => resolve(ev.target.result);
+                    reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
+
+            if (!imageUrl) {
+                alert('Please upload a photo or provides an image URL.');
+                return;
+            }
+
+            const newProduct = {
+                id: 'P-' + Date.now(),
+                name: name,
+                price: price,
+                image: imageUrl,
+                category: category,
+                isNew: true
+            };
+
+            let products = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
+            products.unshift(newProduct);
+            localStorage.setItem('glowcare_added_products', JSON.stringify(products));
+
+            logActivity('Product Added: ' + name);
+            alert('Product added successfully! ✨');
+            e.target.reset();
+            document.getElementById('image-preview').innerHTML = '<i class="fa-solid fa-image" style="color: #333; font-size: 1.5rem;"></i>';
+            toggleAddProductForm();
+            refreshDashboard();
+        };
+
+        function deleteProduct(id) {
+            if (confirm('Are you sure you want to delete this product?')) {
+                let products = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('glowcare_added_products', JSON.stringify(products));
+                logActivity('Product Removed ID: ' + id);
+                refreshDashboard();
+            }
+        }
+
+        function toggleAddSpecialistForm() {
+            const form = document.getElementById('add-specialist-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+        }
+
+        document.getElementById('doc-file-upload').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    document.getElementById('doc-image-preview').innerHTML = `<img src="${event.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById('new-specialist-form').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('doc-name').value;
+            const designation = document.getElementById('doc-designation').value;
+            const experience = document.getElementById('doc-exp').value;
+
+            const fileInput = document.getElementById('doc-file-upload');
+            let imageUrl = 'images/default-doc.png';
+
+            if (fileInput.files && fileInput.files[0]) {
+                imageUrl = await new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => resolve(ev.target.result);
+                    reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
+
+            const newDoc = {
+                id: 'DOC-' + Date.now(),
+                name: name,
+                designation: designation,
+                experience: experience,
+                image: imageUrl
+            };
+
+            let docs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+            docs.unshift(newDoc);
+            localStorage.setItem('glowcare_added_specialists', JSON.stringify(docs));
+
+            logActivity('Specialist Added: ' + name);
+            alert('Specialist added successfully! 🏥');
+            e.target.reset();
+            document.getElementById('doc-image-preview').innerHTML = '<i class="fa-solid fa-user-doctor" style="color: #333; font-size: 1.2rem;"></i>';
+            toggleAddSpecialistForm();
+            refreshDashboard();
+        };
+
+        function deleteSpecialist(id) {
+            if (confirm('Remove this specialist from the directory?')) {
+                let docs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+                docs = docs.filter(d => d.id !== id);
+                localStorage.setItem('glowcare_added_specialists', JSON.stringify(docs));
+                logActivity('Specialist Removed ID: ' + id);
+                refreshDashboard();
+            }
+        }
+
+        function refreshDashboard() {
+            const orders = JSON.parse(localStorage.getItem('glowcare_orders')) || [];
+            const blockedUsers = JSON.parse(localStorage.getItem('glowcare_blocked_ids')) || [];
+            const blockedAgents = JSON.parse(localStorage.getItem('glowcare_blocked_agents')) || [];
+            const addedProducts = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
+            const addedDocs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+
+            // Stats
+            let totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+            document.getElementById('admin-stat-revenue').textContent = 'Rs. ' + totalRevenue.toLocaleString();
+            document.getElementById('admin-stat-orders').textContent = orders.length;
+
+            const customers = [
+                { name: 'John Doe', email: 'john@example.com', date: '2026-02-15' },
+                { name: 'Sarah Miller', email: 'sarah.m@gmail.com', date: '2026-02-20' },
+                { name: 'Praveen K', email: 'praveen8050@yahoo.com', date: '2026-02-25' }
+            ];
+
+            const agents = [
+                { name: 'Agent Smith', id: 'AG-7721', level: 'Senior' },
+                { name: 'Agent Ria', id: 'AG-9902', level: 'Junior' }
+            ];
+
+            document.getElementById('admin-stat-customers').textContent = customers.length;
+            document.getElementById('admin-stat-agents').textContent = agents.length;
+
+            renderCustomers(customers, blockedUsers);
+            renderAgents(agents, blockedAgents);
+            renderRevenue(orders);
+            renderProducts(addedProducts);
+            renderSpecialists(addedDocs);
+        }
+
+        function renderSpecialists(data) {
+            const tbody = document.getElementById('admin-doc-table');
+            if (!tbody) return;
+            tbody.innerHTML = data.length > 0 ? data.map(d => `
+                <tr>
+                    <td><img src="${d.image}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></td>
+                    <td>${d.name}</td>
+                    <td>${d.designation}</td>
+                    <td>${d.experience} Years</td>
+                    <td>
+                        <button class="btn-action btn-block" onclick="deleteSpecialist('${d.id}')">Remove</button>
+                    </td>
+                </tr>
+            `).join('') : '<tr><td colspan="5" style="text-align:center;">No specialists added yet.</td></tr>';
+        }
+
+        function renderProducts(data) {
+            const tbody = document.getElementById('admin-product-table');
+            if (!tbody) return;
+            tbody.innerHTML = data.length > 0 ? data.map(p => `
+                <tr>
+                    <td><img src="${p.image}" style="width: 40px; height: 40px; border-radius: 5px; object-fit: cover;"></td>
+                    <td>${p.name}</td>
+                    <td><span class="badge" style="background: rgba(255,255,255,0.05); color: #888;">${p.category}</span></td>
+                    <td>Rs. ${p.price}</td>
+                    <td>
+                        <button class="btn-action btn-block" onclick="deleteProduct('${p.id}')">Delete</button>
+                    </td>
+                </tr>
+            `).join('') : '<tr><td colspan="5" style="text-align:center;">No custom products added yet.</td></tr>';
+        }
+
+        function renderCustomers(data, blockedIds) {
+            const tbody = document.getElementById('admin-customer-table');
+            if (!tbody) return;
+            tbody.innerHTML = data.map(u => {
+                const isBlocked = blockedIds.includes(u.email);
+                return `
+                    <tr>
+                        <td>${u.name}</td>
+                        <td>${u.email}</td>
+                        <td>${u.date}</td>
+                        <td><span class="badge ${isBlocked ? 'badge-blocked' : 'badge-active'}">${isBlocked ? 'Blocked' : 'Active'}</span></td>
+                        <td>
+                            <button class="btn-action ${isBlocked ? 'btn-unblock' : 'btn-block'}" onclick="toggleBlockUser('${u.email}')">
+                                ${isBlocked ? 'Unblock' : 'Block Access'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderAgents(data, blockedIds) {
+            const tbody = document.getElementById('admin-agent-table');
+            if (!tbody) return;
+            tbody.innerHTML = data.map(a => {
+                const isBlocked = blockedIds.includes(a.id);
+                return `
+                    <tr>
+                        <td>${a.name}</td>
+                        <td>${a.id}</td>
+                        <td><span class="badge ${isBlocked ? 'badge-blocked' : 'badge-active'}">${isBlocked ? 'Blocked' : 'Active'}</span></td>
+                        <td>${a.level}</td>
+                        <td>
+                            <button class="btn-action ${isBlocked ? 'btn-unblock' : 'btn-block'}" onclick="toggleBlockAgent('${a.id}')">
+                                ${isBlocked ? 'Revoke Access' : 'Grant / Restrict'}
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderRevenue(orders) {
+            const products = {};
+            orders.forEach(o => {
+                o.items.forEach(item => {
+                    if (!products[item.name]) products[item.name] = { sold: 0, revenue: 0 };
+                    products[item.name].sold += item.quantity;
+                    products[item.name].revenue += (item.price * item.quantity);
+                });
+            });
+
+            const tbody = document.getElementById('admin-revenue-table');
+            if (!tbody) return;
+            tbody.innerHTML = Object.keys(products).length ? Object.keys(products).map(name => `
+                <tr>
+                    <td>${name}</td>
+                    <td>${products[name].sold} Units</td>
+                    <td style="color:var(--success); font-weight:700;">Rs. ${products[name].revenue.toLocaleString()}</td>
+                    <td style="color:var(--success);">+${Math.floor(Math.random() * 20) + 5}% <i class="fa-solid fa-arrow-up"></i></td>
+                </tr>
+            `).join('') : '<tr><td colspan="4" style="text-align:center;">No Sales Data Recorded Yet</td></tr>';
+        }
+
+        function toggleBlockUser(email) {
+            let blocked = JSON.parse(localStorage.getItem('glowcare_blocked_ids')) || [];
+            if (blocked.includes(email)) {
+                blocked = blocked.filter(id => id !== email);
+                logActivity('UNBLOCKED CUSTOMER: ' + email);
+            } else {
+                blocked.push(email);
+                logActivity('BLOCKED CUSTOMER: ' + email);
+            }
+            localStorage.setItem('glowcare_blocked_ids', JSON.stringify(blocked));
+            refreshDashboard();
+        }
+
+        function toggleBlockAgent(id) {
+            let blocked = JSON.parse(localStorage.getItem('glowcare_blocked_agents')) || [];
+            if (blocked.includes(id)) {
+                blocked = blocked.filter(aid => aid !== id);
+                logActivity('RESTORED AGENT ACCESS: ' + id);
+            } else {
+                blocked.push(id);
+                logActivity('REVOKED AGENT ACCESS: ' + id);
+            }
+            localStorage.setItem('glowcare_blocked_agents', JSON.stringify(blocked));
+            refreshDashboard();
+        }
+
+        function logActivity(msg) {
+            const logs = document.getElementById('audit-logs');
+            if (!logs) return;
+            const entry = document.createElement('div');
+            const now = new Date().toLocaleTimeString();
+            entry.innerHTML = `[${now}] ${msg}`;
+            logs.prepend(entry);
+        }
+    </script>
+</body>
+
+</html>

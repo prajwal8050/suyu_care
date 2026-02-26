@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare | Digital Doctor Consultation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .doctor-hero {
+            height: 60vh;
+            background-image: url('images/doctor-hero.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .doctor-hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .doctor-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .doctor-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 50px 5%;
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .doctor-img-wrapper {
+            height: 320px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            background: #f8f9fa;
+        }
+
+        .doctor-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.6s ease;
+        }
+
+        .doctor-card:hover .doctor-img {
+            transform: scale(1.05);
+        }
+
+        .exp-badge {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .doctor-info {
+            padding: 25px 20px;
+            text-align: left;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cert-tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #d4af37;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .doctor-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: #1a1a1a;
+        }
+
+        .doctor-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .consult-btn {
+            width: 100%;
+            background: var(--text-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .consult-btn:hover {
+            background: var(--accent-dark);
+        }
+
+        /* Video Call Overlay */
+        .video-call-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .video-container {
+            width: 80%;
+            height: 70%;
+            background: #333;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .remote-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .local-video {
+            width: 200px;
+            height: 150px;
+            background: #555;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+
+        .call-controls {
+            display: flex;
+            gap: 30px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .end-call {
+            background: #ff4757;
+        }
+
+        .mute-btn {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <span>Instant Video Consultation | Consult India's Top Skin & Hair Specialists</span>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header" class="scrolled">
+        <div class="logo">
+            <img src="images/logo.png" alt="GLOWCARE Logo">
+            <h1>GLOWCARE</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Collection <i class="fa-solid fa-chevron-down"
+                            style="font-size: 0.6rem; margin-left: 2px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="skincare.html">Skin Care</a>
+                        <a href="haircare.html">Hair Care</a>
+                    </div>
+                </li>
+                <li><a href="doctor.html" class="active">Consult</a></li>
+            </ul>
+        </nav>
+        <div class="header-icons">
+            <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+            <a href="javascript:void(0)" id="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span
+                    class="cart-count">0</span></a>
+        </div>
+    </header>
+
+    <div class="doctor-hero">
+        <div class="doctor-hero-content">
+            <h1>Skin & Hair Consultations</h1>
+            <p>Digital doorstep to glowing skin and healthy hair.</p>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="section-title">
+            <span class="serif" style="font-size: 1.2rem; color: var(--accent-dark);">Available Specialists</span>
+            <h2>Talk To Our Experts</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div class="doctor-grid" id="doctor-list">
+            <!-- Dynamic Content -->
+        </div>
+    </section>
+
+    <!-- Video Call Modal -->
+    <div id="video-call" class="video-call-modal">
+        <h2 id="talking-to" style="margin-bottom: 30px;"></h2>
+        <div class="video-container">
+            <img id="doctor-video-placeholder" src="" class="remote-video">
+            <div class="local-video"></div>
+        </div>
+        <div class="call-controls">
+            <div class="control-btn mute-btn"><i class="fa-solid fa-microphone"></i></div>
+            <div class="control-btn end-call" onclick="endCall()"><i class="fa-solid fa-phone-slash"></i></div>
+            <div class="control-btn mute-btn"><i class="fa-solid fa-video"></i></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 20px;">
+                    <h1 style="color: var(--white); font-size: 1.5rem;">GLOWCARE</h1>
+                </div>
+                <p>Digital healthcare for your beauty and wellness.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GLOWCARE India.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentDoctor = "";
+
+        // Load Dynamic Specialists from Agent Dashboard
+        function loadSpecialists() {
+            const listEl = document.getElementById('doctor-list');
+            const allDocs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+
+            if (allDocs.length === 0) {
+                listEl.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px; background: #fff; border: 1px dashed #ddd; border-radius: 12px;">
+                        <i class="fa-solid fa-user-doctor" style="font-size: 3rem; color: #eee; margin-bottom: 20px; display: block;"></i>
+                        <h3 style="color: #666;">No specialists available for consultation right now.</h3>
+                        <p style="color: #999;">Please check back later or contact support.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = allDocs.map(d => `
+                <div class="doctor-card">
+                    <div class="doctor-img-wrapper">
+                        <img src="${d.image}" alt="${d.name}" class="doctor-img" onerror="this.src='images/default-doc.png'">
+                        <div class="exp-badge">${d.experience} Years Exp.</div>
+                    </div>
+                    <div class="doctor-info">
+                        <span class="cert-tag">Board Certified Specialist</span>
+                        <h3>${d.name}</h3>
+                        <p>${d.designation}</p>
+                        <button class="consult-btn" onclick="startCall('${d.name}')">
+                            <span>START CONSULTATION</span>
+                            <i class="fa-solid fa-arrow-right-long"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function startCall(name) {
+            currentDoctor = name;
+            document.getElementById('video-call').style.display = 'flex';
+            document.getElementById('talking-to').textContent = "Consulting with " + name;
+
+            // Set doctor placeholder image from dynamic list
+            const allDocs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+            const doc = allDocs.find(d => d.name === name);
+
+            if (doc) {
+                document.getElementById('doctor-video-placeholder').src = doc.image;
+            } else {
+                document.getElementById('doctor-video-placeholder').src = "images/default-doc.png";
+            }
+        }
+
+        function endCall() {
+            if (typeof recordConsultation === 'function') {
+                recordConsultation(currentDoctor, Math.floor(Math.random() * 10) + 5);
+            }
+            alert('Consultation completed! 🏥 Your records have been updated in your profile.');
+            document.getElementById('video-call').style.display = 'none';
+        }
+
+        // Initialize
+        loadSpecialists();
+    </script>
+</body>
+
+</html>
