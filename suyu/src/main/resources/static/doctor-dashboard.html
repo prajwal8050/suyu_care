@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare | Partner Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --glow-gold: #d4af37;
+            --glow-dark: #1a1a1a;
+            --glow-bg: #f5f6fa;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+        }
+
+        body {
+            background-color: var(--glow-bg);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--glow-dark);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sidebar-header h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--glow-gold);
+            letter-spacing: 1px;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar-menu li:hover,
+        .sidebar-menu li.active {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--glow-gold);
+            border-left: 4px solid var(--glow-gold);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 50px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: var(--glow-dark);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--glow-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .stat-info p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--glow-dark);
+        }
+
+        /* Table */
+        .section-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 40px;
+            display: none;
+        }
+
+        .section-card.active {
+            display: block;
+        }
+
+        .section-card h2 {
+            margin-bottom: 25px;
+            color: var(--glow-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #fdfdfd;
+            color: #888;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .btn-action {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .btn-accept {
+            background: rgba(46, 204, 113, 0.1);
+            color: var(--success);
+        }
+
+        .btn-reject {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--danger);
+        }
+
+        .btn-accept:hover {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .btn-save {
+            background: var(--glow-dark);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>GlowCare Pro</h2>
+            <p id="doc-name-sidebar" style="color:#888; font-size:0.9rem; margin-top:10px;"></p>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-line"></i> Dashboard</li>
+            <li onclick="switchTab('appointments')"><i class="fa-solid fa-calendar-check"></i> Appointments</li>
+            <li onclick="switchTab('availability')"><i class="fa-solid fa-clock"></i> Manage Availability</li>
+            <li onclick="switchTab('profile')"><i class="fa-solid fa-user-doctor"></i> My Profile</li>
+            <li onclick="logout()" style="color: #e74c3c; margin-top: 50px;"><i class="fa-solid fa-power-off"></i>
+                Secure Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h1 id="page-title">Dashboard</h1>
+            <div
+                style="background: white; padding: 10px 20px; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); color: var(--glow-gold); font-weight: 600;">
+                <i class="fa-solid fa-wallet"></i> Wallet: Rs. <span id="wallet-balance">0</span>
+            </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="tab-dashboard" class="section-card active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                    <div class="stat-info">
+                        <h3>Upcoming Appts</h3>
+                        <p id="stat-upcoming">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3>Total Patients</h3>
+                        <p id="stat-patients">0</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                    <div class="stat-info">
+                        <h3>This Month (Rs.)</h3>
+                        <p id="stat-revenue">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Recent Requests</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Date & Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="recent-requests">
+                    <!-- Dynamic -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Appointments View -->
+        <div id="tab-appointments" class="section-card">
+            <h2>All Appointments</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Date & Time</th>
+                        <th>Contact</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="all-appointments">
+                    <!-- Dynamic -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Availability View -->
+        <div id="tab-availability" class="section-card">
+            <h2>Manage Time Slots</h2>
+            <p>Add the times you are available for GlowCare digital consultations.</p>
+            <div class="form-group" style="margin-top: 20px; display: flex; gap: 10px;">
+                <input type="time" id="new-slot" style="max-width: 200px;">
+                <button class="btn-save" onclick="addSlot()">Add Slot</button>
+            </div>
+            <div id="slots-container" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 20px;">
+                <!-- Slots -->
+            </div>
+        </div>
+
+        <!-- Profile View -->
+        <div id="tab-profile" class="section-card">
+            <h2>Clinic Profile</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div class="form-group">
+                    <label>Consultation Fee (Rs.)</label>
+                    <input type="number" id="prof-fee">
+                </div>
+                <div class="form-group">
+                    <label>Clinic Address</label>
+                    <input type="text" id="prof-address">
+                </div>
+            </div>
+            <button class="btn-save" onclick="saveProfile()">Save Changes</button>
+        </div>
+    </div>
+
+    <script>
+        let currentDoc = JSON.parse(localStorage.getItem('glowcare_active_doctor'));
+
+        if (!currentDoc) {
+            window.location.href = 'doctor-login.html';
+        }
+
+        // Init
+        document.getElementById('doc-name-sidebar').innerText = currentDoc.name;
+        document.getElementById('wallet-balance').innerText = currentDoc.revenue || 0;
+        document.getElementById('stat-revenue').innerText = currentDoc.revenue || 0;
+
+        // Global state
+        let myAppts = [];
+        let appointments = []; // Global for storage sync
+
+        async function fetchAppointments() {
+            // Fetch backend appointments
+            let backendAppts = [];
+            try {
+                const response = await fetch(`/api/appointments/doctor/${currentDoc.id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    backendAppts = data.map(a => ({
+                        ...a,
+                        isBackend: true
+                    }));
+                }
+            } catch (err) {
+                console.error("Error fetching backend appointments:", err);
+            }
+
+            // Sync with local storage legacy
+            appointments = JSON.parse(localStorage.getItem('glowcare_appointments')) || [];
+            let legacyAppts = appointments.filter(a => a.doctorId === currentDoc.id || a.doctorId === 'DB-' + currentDoc.id);
+
+            myAppts = [...backendAppts, ...legacyAppts];
+            renderAppointments();
+        }
+
+        function renderAppointments() {
+            document.getElementById('stat-upcoming').innerText = myAppts.filter(a => a.status === 'Booked').length;
+            document.getElementById('stat-patients').innerText = new Set(myAppts.map(a => a.patientName)).size;
+
+            const tableRows = myAppts.map((a, index) => `
+                <tr>
+                    <td><strong>${a.patientName}</strong><br><small>${a.type}</small></td>
+                    <td>${a.date} | ${a.time}</td>
+                    <td>${a.contact}</td>
+                    <td><span style="padding: 5px 10px; border-radius: 20px; font-size: 0.8rem; background: ${getStatusColor(a.status)}; color: white;">${a.status}</span></td>
+                    <td>
+                        ${a.status === 'Pending' ? `
+                            <button class="btn-action btn-accept" onclick="updateAppt(${index}, 'Booked')">Accept</button>
+                            <button class="btn-action btn-reject" onclick="updateAppt(${index}, 'Rejected')">Reject</button>
+                        ` : (a.status === 'Booked' ? `
+                            <button class="btn-action btn-accept" onclick="updateAppt(${index}, 'Completed')">Mark Complete</button>
+                        ` : '')}
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('all-appointments').innerHTML = tableRows;
+            document.getElementById('recent-requests').innerHTML = myAppts.filter(a => a.status === 'Pending').map((a, index) => {
+                const globalIndex = myAppts.indexOf(a);
+                return `
+                <tr>
+                    <td>${a.patientName}</td>
+                    <td>${a.date} | ${a.time}</td>
+                    <td>Pending</td>
+                    <td>
+                        <button class="btn-action btn-accept" onclick="updateAppt(${globalIndex}, 'Booked')">Accept</button>
+                        <button class="btn-action btn-reject" onclick="updateAppt(${globalIndex}, 'Rejected')">Reject</button>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'Booked': return '#d4af37';
+                case 'Completed': return '#2ecc71';
+                case 'Rejected': return '#e74c3c';
+                default: return '#999';
+            }
+        }
+
+        async function updateAppt(index, newStatus) {
+            const appt = myAppts[index];
+
+            if (appt.isBackend) {
+                try {
+                    const response = await fetch(`/api/appointments/${appt.id}/status`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: newStatus })
+                    });
+                    if (response.ok) {
+                        if (newStatus === 'Completed') {
+                            updateEarnings();
+                        }
+                        await fetchAppointments();
+                    }
+                } catch (err) {
+                    console.error("Error updating appointment status:", err);
+                    alert('Server error updating status.');
+                }
+            } else {
+                // Legacy sync
+                appt.status = newStatus;
+                const globalApptIndex = appointments.findIndex(a => a.id === appt.id);
+                if (globalApptIndex !== -1) {
+                    appointments[globalApptIndex].status = newStatus;
+                    localStorage.setItem('glowcare_appointments', JSON.stringify(appointments));
+                }
+                if (newStatus === 'Completed') {
+                    updateEarnings();
+                }
+                renderAppointments();
+            }
+        }
+
+        function updateEarnings() {
+            currentDoc.revenue = (Number(currentDoc.revenue) || 0) + Number(currentDoc.fee);
+            document.getElementById('wallet-balance').innerText = currentDoc.revenue;
+            document.getElementById('stat-revenue').innerText = currentDoc.revenue;
+            updateGlobalDoc();
+        }
+
+        function renderSlots() {
+            const slots = currentDoc.availableSlots || [];
+            document.getElementById('slots-container').innerHTML = slots.map((s, i) => `
+                <div style="background: #fff; border: 1px solid #ddd; padding: 10px 20px; border-radius: 20px; display: flex; align-items: center; gap: 10px;">
+                    ${s} <i class="fa-solid fa-times" style="cursor:pointer; color: var(--danger);" onclick="removeSlot(${i})"></i>
+                </div>
+            `).join('');
+        }
+
+        function addSlot() {
+            const time = document.getElementById('new-slot').value;
+            if (time) {
+                const formatted = new Date('1970-01-01T' + time + 'Z').toLocaleTimeString('en-US', { timeZone: 'UTC', hour12: true, hour: 'numeric', minute: 'numeric' });
+                if (!currentDoc.availableSlots) currentDoc.availableSlots = [];
+                currentDoc.availableSlots.push(formatted);
+                updateGlobalDoc();
+                renderSlots();
+            }
+        }
+
+        function removeSlot(index) {
+            currentDoc.availableSlots.splice(index, 1);
+            updateGlobalDoc();
+            renderSlots();
+        }
+
+        function updateGlobalDoc() {
+            localStorage.setItem('glowcare_active_doctor', JSON.stringify(currentDoc));
+            let partners = JSON.parse(localStorage.getItem('glowcare_partners')) || [];
+            let i = partners.findIndex(p => p.id === currentDoc.id);
+            if (i !== -1) {
+                partners[i] = currentDoc;
+                localStorage.setItem('glowcare_partners', JSON.stringify(partners));
+            }
+        }
+
+        function saveProfile() {
+            currentDoc.fee = document.getElementById('prof-fee').value;
+            currentDoc.clinicAddress = document.getElementById('prof-address').value;
+            updateGlobalDoc();
+            alert('Profile Updated Successfully!');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.section-card').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu li').forEach(s => s.classList.remove('active'));
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+
+            const titles = { dashboard: 'Dashboard', appointments: 'Appointments Manager', availability: 'Manage Schedule', profile: 'Clinic Profile' };
+            document.getElementById('page-title').innerText = titles[tabId];
+        }
+
+        function logout() {
+            localStorage.removeItem('glowcare_active_doctor');
+            window.location.href = 'doctor-join.html';
+        }
+
+        document.getElementById('prof-fee').value = currentDoc.fee || '';
+        document.getElementById('prof-address').value = currentDoc.clinicAddress || '';
+
+        fetchAppointments();
+        renderSlots();
+    </script>
+</body>
+
+</html>

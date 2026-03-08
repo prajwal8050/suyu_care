@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare | Partner Registration</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --glow-gold: #d4af37;
+            --glow-dark: #1a1a1a;
+            --glow-bg: #fffbf5;
+            --input-bg: #fdfdfd;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            background-color: var(--glow-dark);
+            font-family: 'Inter', sans-serif;
+            color: #ccc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 5%;
+        }
+
+        .signup-card {
+            background: white;
+            color: var(--glow-dark);
+            width: 100%;
+            max-width: 800px;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .signup-header {
+            background: var(--glow-bg);
+            padding: 50px 60px 40px;
+            text-align: center;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .signup-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--glow-dark);
+            margin-bottom: 10px;
+        }
+
+        .signup-header i {
+            color: var(--glow-gold);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .step-progress {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0 0;
+            position: relative;
+        }
+
+        .progress-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #eee;
+            transition: all 0.4s;
+        }
+
+        .progress-indicator.active {
+            background: var(--glow-gold);
+            box-shadow: 0 0 10px var(--glow-gold);
+        }
+
+        .step-content {
+            padding: 50px 60px;
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            background: var(--input-bg);
+            font-size: 0.95rem;
+            color: var(--glow-dark);
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: var(--glow-gold);
+        }
+
+        .error-msg {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 5px;
+            display: none;
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+        }
+
+        .upload-profile {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #f8f8f8;
+            border: 2px dashed #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .upload-profile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .signup-footer {
+            padding: 30px 60px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-prev {
+            background: transparent;
+            color: #888;
+            border: 1px solid #ddd;
+            padding: 15px 30px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-next {
+            background: var(--glow-dark);
+            color: white;
+            border: none;
+            padding: 15px 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .btn-next:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background: #333;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Subscription Summary Selection */
+        .summary-card {
+            background: var(--glow-bg);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--glow-gold);
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .summary-price {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--glow-gold);
+        }
+
+        #doc-error {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            display: none;
+        }
+
+        .success-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .success-box i {
+            font-size: 4rem;
+            color: var(--success-color);
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-header,
+            .step-content,
+            .signup-footer {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="signup-card">
+        <form id="partner-signup-form" onsubmit="event.preventDefault(); nextStep();">
+            <div class="signup-header">
+                <i class="fa-solid fa-user-doctor"></i>
+                <h1>Doctor Onboarding</h1>
+                <p>Register your clinic and start consultations with GlowCare</p>
+                <div class="step-progress">
+                    <div id="p-1" class="progress-indicator active"></div>
+                    <div id="p-2" class="progress-indicator"></div>
+                    <div id="p-3" class="progress-indicator"></div>
+                    <div id="p-4" class="progress-indicator"></div>
+                </div>
+            </div>
+
+            <!-- STEP 1: Personal Details -->
+            <div id="step-1" class="step-content active">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 30px;">Personal Information</h3>
+
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Dr. Full Name *</label>
+                        <input type="text" id="doc-name" placeholder="E.g. Dr. Rohan Sahni">
+                        <div class="error-msg" id="err-name">Name is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Specialization *</label>
+                        <select id="doc-spec">
+                            <option value="Skin Specialist">Dermatologist (Skin)</option>
+                            <option value="Trichologist">Trichologist (Hair)</option>
+                            <option value="Both">Both Skin & Hair Care</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" id="doc-email" placeholder="example@doctor.com">
+                        <div class="error-msg" id="err-email">Valid email is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="doc-phone" placeholder="10-digit number">
+                        <div class="error-msg" id="err-phone">Valid 10-digit number required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Password *</label>
+                        <input type="password" id="doc-pass" placeholder="Strong password">
+                        <div class="error-msg" id="err-pass">Must be 8+ chars (uppercase, lowercase, number)</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Years of Exp. *</label>
+                        <input type="number" id="doc-exp" placeholder="E.g. 10">
+                        <div class="error-msg" id="err-exp">Experience is required</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- STEP 2: Clinic Details -->
+            <div id="step-2" class="step-content">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 30px;">Clinic Information</h3>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Clinic Name *</label>
+                        <input type="text" id="clinic-name" placeholder="E.g. SkinSense Holistic Clinic">
+                        <div class="error-msg" id="err-clinic">Clinic name is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Consultation Fee (Rs.) *</label>
+                        <input type="number" id="fee" placeholder="E.g. 500">
+                        <div class="error-msg" id="err-fee">Fee is required</div>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label>Clinic Address *</label>
+                        <textarea id="address" placeholder="Complete address of your primary clinic..."
+                            rows="3"></textarea>
+                        <div class="error-msg" id="err-addr">Address is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" id="city" placeholder="E.g. Mumbai, Delhi">
+                        <div class="error-msg" id="err-city">City is required</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Available Timings *</label>
+                        <input type="text" id="timings" placeholder="E.g. Mon-Sat (10AM - 5PM)">
+                        <div class="error-msg" id="err-time">Timings are required</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3: Google Maps Integration -->
+            <div id="step-3" class="step-content">
+                <h3 style="font-family: 'Playfair Display', serif; margin-bottom: 30px;">Location Visibility</h3>
+                <p style="color: #666; margin-bottom: 25px; line-height: 1.6;">Help patients find you on the map. Enter
+                    your Google Maps Direct Link or Clinic Location Tag.</p>
+                <div class="form-group">
+                    <label>Google Maps Embed Link / URL</label>
+                    <input type="text" id="maps-link" placeholder="E.g. https://goo.gl/maps/...">
+                </div>
+                <div
+                    style="width: 100%; height: 250px; background: #eee; border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc;">
+                    <span style="color: #999; text-align: center;"><i class="fa-solid fa-map-location-dot"
+                            style="font-size: 2rem; display: block; margin-bottom: 10px;"></i> Map Snapshot Preview
+                        Area</span>
+                </div>
+            </div>
+
+            <!-- STEP 4: Subscription Activation -->
+            <div id="step-4" class="step-content">
+                <div class="summary-card">
+                    <i class="fa-solid fa-crown"
+                        style="color: var(--glow-gold); font-size: 2.5rem; margin-bottom: 20px;"></i>
+                    <h3>Activate Your Partner Profile</h3>
+                    <p style="color: #666; margin-bottom: 30px;">Secure your listing on GlowCare today.</p>
+                    <div class="summary-price">Rs. 2,499 <span>/ month</span></div>
+                    <p style="font-size: 0.9rem; color: #888; margin-bottom: 30px;">Includes: Verified Profile, Dynamic
+                        Calendar, Real-time SMS notifications & Dashboard Analytics.</p>
+
+                    <div
+                        style="background: white; border: 1px solid #eee; padding: 20px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 30px;">
+                        <i class="fa-solid fa-shield-check" style="color: #2ecc71;"></i>
+                        <span style="font-weight: 600; font-size: 0.9rem;">Secure Razorpay Integration Mode</span>
+                    </div>
+                </div>
+                <div id="api-error" style="color:red; text-align:center; margin-top:10px; display:none;"></div>
+            </div>
+
+            <div class="signup-footer">
+                <button type="button" class="btn-prev" id="prev-btn" style="visibility: hidden;"
+                    onclick="prevStep()">Previous</button>
+                <button type="submit" class="btn-next" id="next-btn">Continue</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="success-overlay" id="success-modal">
+        <div class="success-box">
+            <i class="fa-solid fa-circle-check"></i>
+            <h2 style="color: var(--glow-dark); margin-bottom:10px;">Registration Successful!</h2>
+            <p style="color:#666; font-size:0.95rem; margin-bottom:20px;">Your documents have been securely uploaded.
+                You will receive an email once your profile is verified by the administration.</p>
+            <button class="btn-next" onclick="window.location.href='index.html'">Go to Homepage</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+
+        // Hide errors on input
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', () => {
+                const errEl = document.getElementById('err-' + el.id.replace('doc-', '').replace('clinic-name', 'clinic').replace('address', 'addr').replace('city', 'city').replace('timings', 'time').replace('fee', 'fee'));
+                if (errEl) errEl.style.display = 'none';
+            });
+        });
+
+
+
+        function validateStep1() {
+            let isValid = true;
+            const name = document.getElementById('doc-name').value;
+            const email = document.getElementById('doc-email').value;
+            const phone = document.getElementById('doc-phone').value;
+            const pass = document.getElementById('doc-pass').value;
+            const exp = document.getElementById('doc-exp').value;
+
+            if (!name.trim()) { document.getElementById('err-name').style.display = 'block'; isValid = false; }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email.trim() || !emailRegex.test(email)) { document.getElementById('err-email').style.display = 'block'; isValid = false; }
+
+            // Phone validation
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!phone.trim() || !phoneRegex.test(phone)) { document.getElementById('err-phone').style.display = 'block'; isValid = false; }
+
+            // Password strength validation (min 8 chars, 1 uppercase, 1 lowercase, 1 number)
+            const passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (!pass || !passRegex.test(pass)) { document.getElementById('err-pass').style.display = 'block'; isValid = false; }
+
+            if (!exp) { document.getElementById('err-exp').style.display = 'block'; isValid = false; }
+
+            return isValid;
+        }
+
+        function validateStep2() {
+            let isValid = true;
+            const clinic = document.getElementById('clinic-name').value;
+            const fee = document.getElementById('fee').value;
+            const addr = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const time = document.getElementById('timings').value;
+
+            if (!clinic.trim()) { document.getElementById('err-clinic').style.display = 'block'; isValid = false; }
+            if (!fee) { document.getElementById('err-fee').style.display = 'block'; isValid = false; }
+            if (!addr.trim()) { document.getElementById('err-addr').style.display = 'block'; isValid = false; }
+            if (!city.trim()) { document.getElementById('err-city').style.display = 'block'; isValid = false; }
+            if (!time.trim()) { document.getElementById('err-time').style.display = 'block'; isValid = false; }
+
+            return isValid;
+        }
+
+        function updateProgress() {
+            document.querySelectorAll('.progress-indicator').forEach((p, i) => {
+                p.classList.toggle('active', i < currentStep);
+            });
+        }
+
+        function nextStep() {
+            if (currentStep === 1 && !validateStep1()) return;
+            if (currentStep === 2 && !validateStep2()) return;
+
+            if (currentStep < 4) {
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                currentStep++;
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                updateProgress();
+
+                document.getElementById('prev-btn').style.visibility = 'visible';
+                if (currentStep === 4) {
+                    document.getElementById('next-btn').innerHTML = 'Pay & Finish Registration';
+                }
+            } else {
+                handleRegistration();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step-${currentStep}`).classList.remove('active');
+                currentStep--;
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                updateProgress();
+
+                if (currentStep === 1) {
+                    document.getElementById('prev-btn').style.visibility = 'hidden';
+                }
+                document.getElementById('next-btn').innerHTML = 'Continue';
+            }
+        }
+
+        async function handleRegistration() {
+            const btn = document.getElementById('next-btn');
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+            document.getElementById('api-error').style.display = 'none';
+
+            try {
+                const docData = {
+                    name: document.getElementById('doc-name').value,
+                    specialization: document.getElementById('doc-spec').value,
+                    email: document.getElementById('doc-email').value,
+                    phone: document.getElementById('doc-phone').value,
+                    password: document.getElementById('doc-pass').value,
+                    experience: document.getElementById('doc-exp').value,
+                    clinicName: document.getElementById('clinic-name').value,
+                    fee: document.getElementById('fee').value,
+                    address: document.getElementById('address').value,
+                    city: document.getElementById('city').value,
+                    timings: document.getElementById('timings').value,
+                    mapsLink: document.getElementById('maps-link').value || ''
+                };
+
+                const response = await fetch('/api/doctors/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(docData)
+                });
+
+                let data;
+                try {
+                    data = await response.json();
+                } catch (jsonErr) {
+                    if (!response.ok) {
+                        throw new Error(`Server returned status ${response.status}`);
+                    } else {
+                        throw new Error("Invalid response format from server.");
+                    }
+                }
+
+                if (response.ok && data.success) {
+                    document.getElementById('success-modal').style.display = 'flex';
+                } else {
+                    document.getElementById('api-error').innerText = data.message || "Registration failed. Please try again.";
+                    document.getElementById('api-error').style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerText = "Pay & Finish Registration";
+                }
+
+            } catch (err) {
+                console.error("Registration error:", err);
+                // Differentiate between generic catch message and specific TypeError (Network Connection)
+                let errorMsg = err.message;
+                if (err.name === 'TypeError') {
+                    errorMsg = "An error occurred connecting to the server. Ensure backend is running.";
+                }
+                document.getElementById('api-error').innerText = errorMsg;
+                document.getElementById('api-error').style.display = 'block';
+                btn.disabled = false;
+                btn.innerText = "Pay & Finish Registration";
+            }
+        }
+    </script>
+</body>
+
+</html>
