@@ -20,34 +20,72 @@ if (!document.getElementById('auth-modal')) {
     <div id="auth-modal" class="modal">
         <div class="modal-content">
             <span id="close-auth" class="close-btn">&times;</span>
+            
             <div id="login-form-container">
                 <h2>Login</h2>
                 <form id="login-form">
                     <div class="form-group"><label>Email</label><input type="email" id="login-email" required></div>
                     <div class="form-group"><label>Password</label><input type="password" id="login-password" required></div>
                     <button type="submit" class="btn">Login</button>
+                    <p class="form-switch"><a href="javascript:void(0)" id="switch-to-forgot">Forgot Password?</a></p>
                     <p class="form-switch">Don't have an account? <a href="javascript:void(0)" id="switch-to-register">Register here</a></p>
                 </form>
             </div>
+            
             <div id="register-form-container" style="display: none;">
                 <h2>Register</h2>
                 <form id="register-form">
                     <div class="form-group"><label>Full Name</label><input type="text" id="reg-name" required></div>
                     <div class="form-group"><label>Email</label><input type="email" id="reg-email" required></div>
+                    <div class="form-group"><label>Phone Number</label><input type="tel" id="reg-phone" required></div>
                     <div class="form-group"><label>Password</label><input type="password" id="reg-password" required></div>
-                    <button type="submit" class="btn">Create Account</button>
+                    <button type="submit" class="btn">Register</button>
                     <p class="form-switch">Already have an account? <a href="javascript:void(0)" id="switch-to-login">Login here</a></p>
                 </form>
             </div>
+
+            <div id="otp-form-container" style="display: none;">
+                <h2>Verify OTP</h2>
+                <p>We've sent a 6-digit OTP to your email.</p>
+                <form id="otp-form">
+                    <input type="hidden" id="otp-email-verify">
+                    <div class="form-group"><label>Enter OTP</label><input type="text" id="verify-otp-input" required maxlength="6"></div>
+                    <button type="submit" class="btn">Verify & Complete</button>
+                </form>
+                <div style="margin-top: 15px; text-align: center;">
+                    <a href="javascript:void(0)" id="resend-otp-btn" style="color: var(--accent-color); text-decoration: underline; font-size: 0.9rem;">Resend OTP</a>
+                </div>
+            </div>
+
             <div id="forgot-form-container" style="display: none;">
                 <h2>Reset Password</h2>
                 <form id="forgot-form">
-                    <p>Enter your email to receive a password reset link.</p>
+                    <p>Enter your email to receive a password reset OTP.</p>
                     <div class="form-group"><label>Email</label><input type="email" id="forgot-email" required></div>
-                    <button type="submit" class="btn">Send Link</button>
+                    <button type="submit" class="btn">Send OTP</button>
                     <p class="form-switch"><a href="javascript:void(0)" id="back-to-login">Back to Login</a></p>
                 </form>
             </div>
+
+            <div id="forgot-otp-form-container" style="display: none;">
+                <h2>Verify Password OTP</h2>
+                <form id="forgot-otp-form">
+                    <input type="hidden" id="forgot-otp-email">
+                    <div class="form-group"><label>Enter OTP</label><input type="text" id="forgot-otp-input" required maxlength="6"></div>
+                    <button type="submit" class="btn">Verify OTP</button>
+                </form>
+            </div>
+
+            <div id="new-password-form-container" style="display: none;">
+                <h2>Create New Password</h2>
+                <form id="new-password-form">
+                    <input type="hidden" id="reset-email">
+                    <input type="hidden" id="reset-otp">
+                    <div class="form-group"><label>New Password</label><input type="password" id="new-pass-input" required></div>
+                    <button type="submit" class="btn">Update Password</button>
+                </form>
+            </div>
+
             <div id="profile-form-container" style="display: none;">
                 <div class="modal-header-profile">
                     <h2>My Profile</h2>
@@ -76,6 +114,39 @@ if (!document.getElementById('auth-modal')) {
 if (!document.getElementById('drawer-overlay')) {
     document.body.insertAdjacentHTML('beforeend', '<div id="drawer-overlay" class="drawer-overlay"></div>');
 }
+
+// --- BLOG MODAL LOGIC ---
+function openBlog(id) {
+    const modal = document.getElementById(id);
+    if (!modal) {
+        console.error('Blog modal not found:', id);
+        return;
+    }
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+    }, 10);
+}
+
+function closeBlog(id) {
+    const modal = document.getElementById(id);
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+}
+
+// Global click listener to close blog modals when clicking outside
+window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('modal')) {
+        closeBlog(e.target.id);
+    }
+});
+
 
 // --- TOAST NOTIFICATION ---
 function showToast(message, icon = 'fa-check-circle') {
@@ -226,8 +297,16 @@ function renderDynamicProducts() {
     if (pageTitle.includes('skin')) category = 'skincare';
     if (pageTitle.includes('hair')) category = 'haircare';
 
-    // Only add to collection pages, not the home page
-    if (!category) return;
+    // Only add to collection pages, EXCEPT the home page for specific featured sections
+    if (!category) {
+        // Find the 'Best Sellers' section for homepage
+        const homeSection = document.getElementById('shop');
+        if (homeSection) {
+            category = 'skincare'; // Default to skincare for home bestsellers
+        } else {
+            return;
+        }
+    }
 
     const addedProducts = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
     const filtered = addedProducts.filter(p => p.category === category);
@@ -295,7 +374,10 @@ let closeAuth = document.getElementById('close-auth');
 
 let loginContainer = document.getElementById('login-form-container');
 let registerContainer = document.getElementById('register-form-container');
+let otpContainer = document.getElementById('otp-form-container');
 let forgotContainer = document.getElementById('forgot-form-container');
+let forgotOtpContainer = document.getElementById('forgot-otp-form-container');
+let newPasswordContainer = document.getElementById('new-password-form-container');
 let profileContainer = document.getElementById('profile-form-container');
 
 // Re-check for elements in case they were injected
@@ -304,21 +386,47 @@ function initAuth() {
     closeAuth = document.getElementById('close-auth');
     loginContainer = document.getElementById('login-form-container');
     registerContainer = document.getElementById('register-form-container');
+    otpContainer = document.getElementById('otp-form-container');
     forgotContainer = document.getElementById('forgot-form-container');
+    forgotOtpContainer = document.getElementById('forgot-otp-form-container');
+    newPasswordContainer = document.getElementById('new-password-form-container');
     profileContainer = document.getElementById('profile-form-container');
 
     if (closeAuth) closeAuth.addEventListener('click', closeAuthModal);
 }
 initAuth();
 
-function openAuth() {
+function hideAllAuthForms() {
+    if (loginContainer) loginContainer.style.display = 'none';
+    if (registerContainer) registerContainer.style.display = 'none';
+    if (otpContainer) otpContainer.style.display = 'none';
+    if (forgotContainer) forgotContainer.style.display = 'none';
+    if (forgotOtpContainer) forgotOtpContainer.style.display = 'none';
+    if (newPasswordContainer) newPasswordContainer.style.display = 'none';
+    if (profileContainer) profileContainer.style.display = 'none';
+}
+
+function updateNavbar() {
+    const userEmail = localStorage.getItem('glowcare_customer_email');
+    const loginDropdown = document.getElementById('login-dropdown');
+    const profileDropdown = document.getElementById('profile-dropdown');
+
+    if (userEmail) {
+        if (loginDropdown) loginDropdown.style.display = 'none';
+        if (profileDropdown) profileDropdown.style.display = 'block';
+    } else {
+        if (loginDropdown) loginDropdown.style.display = 'block';
+        if (profileDropdown) profileDropdown.style.display = 'none';
+    }
+}
+updateNavbar();
+
+async function openAuth() {
     initAuth(); // Refresh references before opening
     const customerEmail = localStorage.getItem('glowcare_customer_email');
     if (customerEmail) {
         // Show Profile if logged in
-        if (loginContainer) loginContainer.style.display = 'none';
-        if (registerContainer) registerContainer.style.display = 'none';
-        if (forgotContainer) forgotContainer.style.display = 'none';
+        hideAllAuthForms();
         if (profileContainer) profileContainer.style.display = 'block';
 
         // Load saved data
@@ -333,9 +441,9 @@ function openAuth() {
         if (pHair) pHair.value = profileData.hairType || 'straight';
         if (pBio) pBio.value = profileData.bio || '';
 
-        // Load Order History
+        // Load Order History (Local for now, as per existing logic)
         const allOrders = JSON.parse(localStorage.getItem('glowcare_orders')) || [];
-        const customerOrders = allOrders.filter(o => o.email === customerEmail);
+        const customerOrders = allOrders.filter(o => o.email && o.email.toLowerCase() === customerEmail.toLowerCase());
         const orderHistoryEl = document.getElementById('customer-order-history');
         if (orderHistoryEl) {
             orderHistoryEl.innerHTML = customerOrders.length > 0 ? customerOrders.map(order => `
@@ -350,18 +458,52 @@ function openAuth() {
             `).join('') : '<p style="font-size: 0.9rem; opacity: 0.6; text-align: center;">No orders yet.</p>';
         }
 
-        // Load Consultation Records
-        const allConsultations = JSON.parse(localStorage.getItem('glowcare_consultations')) || [];
-        const customerConsultations = allConsultations.filter(c => c.customerEmail === customerEmail);
+        // Load Consultation Records (Backend + Local Storage)
         const consultHistoryEl = document.getElementById('customer-consultation-history');
         if (consultHistoryEl) {
-            consultHistoryEl.innerHTML = customerConsultations.length > 0 ? customerConsultations.map(c => `
-                <div style="border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 0.85rem;">
-                    <div style="font-weight: 600;">Specialist: ${c.doctorName}</div>
-                    <div style="margin-top: 5px; opacity: 0.7;">Date: ${c.date}</div>
-                    <div style="margin-top: 5px; color: #8b6e4e;">Duration: ${c.duration} mins</div>
-                </div>
-            `).join('') : '<p style="font-size: 0.9rem; opacity: 0.6; text-align: center;">No doctor sessions record.</p>';
+            consultHistoryEl.innerHTML = '<p style="text-align:center; opacity:0.6;">Loading history...</p>';
+
+            // Get local appointments first
+            const localAppts = JSON.parse(localStorage.getItem('glowcare_appointments')) || [];
+            const patientLocalAppts = localAppts.filter(a => a.patientEmail && a.patientEmail.toLowerCase() === customerEmail.toLowerCase());
+
+            try {
+                const response = await fetch('/api/appointments/patient/' + customerEmail);
+                let backendAppts = [];
+                if (response.ok) {
+                    backendAppts = await response.json();
+                }
+
+                // Merge and display
+                const allAppts = [...backendAppts, ...patientLocalAppts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                consultHistoryEl.innerHTML = allAppts.length > 0 ? allAppts.map(c => {
+                    const docName = c.doctor ? c.doctor.name : (c.doctorName || 'Unknown Doctor');
+                    return `
+                        <div style="border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 0.85rem; background: #fafafa;">
+                            <div style="display: flex; justify-content: space-between; font-weight: 600;">
+                                <span>Dr. ${docName}</span>
+                                <span style="color: #8b6e4e;">${c.status || 'Pending'}</span>
+                            </div>
+                            <div style="margin-top: 5px; opacity: 0.7;"><i class="fa-regular fa-calendar"></i> ${c.date} at ${c.time}</div>
+                            <div style="margin-top: 5px; font-size: 0.75rem;"><i class="fa-solid fa-stethoscope"></i> ${c.type || 'Consultation'}</div>
+                        </div>
+                    `;
+                }).join('') : '<p style="font-size: 0.9rem; opacity: 0.6; text-align: center;">No appointments found.</p>';
+
+            } catch (err) {
+                console.error("Error fetching appointments:", err);
+                // Fallback to only local if backend fails
+                consultHistoryEl.innerHTML = patientLocalAppts.length > 0 ? patientLocalAppts.map(c => `
+                    <div style="border: 1px solid #f0f0f0; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 0.85rem;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 600;">
+                            <span>Dr. ${c.doctorName || 'Specialist'}</span>
+                            <span style="color: #8b6e4e;">${c.status || 'Pending'}</span>
+                        </div>
+                        <div style="margin-top: 5px; opacity: 0.7;">${c.date} at ${c.time}</div>
+                    </div>
+                `).join('') : '<p style="font-size: 0.9rem; opacity: 0.6; text-align: center;">Error connecting to server. Local history empty.</p>';
+            }
         }
     } else {
         // Show Login if not logged in
@@ -378,7 +520,7 @@ function closeAuthModal() {
     if (modalOverlay) modalOverlay.classList.remove('active');
 }
 
-if (userIcon) userIcon.addEventListener('click', openAuth);
+// if (userIcon) userIcon.addEventListener('click', openAuth); // Disabled to allow dropdown to function properly
 if (closeAuth) closeAuth.addEventListener('click', closeAuthModal);
 
 // --- CHECKOUT MODAL LOGIC ---
@@ -440,10 +582,27 @@ document.addEventListener('click', (e) => {
         loginContainer.style.display = 'none';
         forgotContainer.style.display = 'block';
     }
-    if (e.target.id === 'logout-customer') {
+    if (e.target.id === 'logout-customer' || e.target.id === 'nav-logout-btn') {
         localStorage.removeItem('glowcare_customer_email');
-        alert('Logged out successfully!');
-        location.reload();
+        showToast('Logged out successfully! 👋');
+        updateNavbar();
+        closeAuthModal();
+        setTimeout(() => location.reload(), 500);
+    }
+    if (e.target.id === 'resend-otp-btn') {
+        const email = document.getElementById('otp-email-verify').value;
+        if (!email) return;
+
+        showToast('Resending OTP...');
+        fetch('/api/customer/resend-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        }).then(async res => {
+            const data = await res.json();
+            if (!res.ok) alert(data.error || 'Failed to resend');
+            else showToast('OTP Resent to ' + email);
+        }).catch(err => console.error(err));
     }
 });
 
@@ -455,25 +614,151 @@ document.addEventListener('submit', (e) => {
     if (target.id === 'login-form') {
         e.preventDefault();
         const email = document.getElementById('login-email').value;
-        const blockedIds = JSON.parse(localStorage.getItem('glowcare_blocked_ids')) || [];
+        const password = document.getElementById('login-password').value;
 
-        if (blockedIds.includes(email)) {
-            alert('ACCESS REVOKED: Your account has been suspended.');
-            return;
-        }
-
-        localStorage.setItem('glowcare_customer_email', email);
-        showToast('Successfully Logged In! ✨');
-        openAuth();
+        fetch('/api/customer/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) {
+                    if (data.needsVerification === "true") {
+                        showToast('Account not verified. OTP sent to your email.', 'fa-triangle-exclamation');
+                        hideAllAuthForms();
+                        document.getElementById('otp-email-verify').value = email;
+                        document.getElementById('otp-form-container').style.display = 'block';
+                    } else {
+                        alert(data.error || 'Login failed');
+                    }
+                } else {
+                    localStorage.setItem('glowcare_customer_email', data.email);
+                    showToast('Successfully Logged In! ✨');
+                    updateNavbar();
+                    openAuth();
+                }
+            }).catch(err => {
+                console.error(err);
+                alert('Error connecting to server.');
+            });
     }
 
     // Register Form
     if (target.id === 'register-form') {
         e.preventDefault();
+        const name = document.getElementById('reg-name').value;
         const email = document.getElementById('reg-email').value;
-        localStorage.setItem('glowcare_customer_email', email);
-        showToast('Successfully Registered! 🎉');
-        openAuth();
+        const phone = document.getElementById('reg-phone').value;
+        const password = document.getElementById('reg-password').value;
+
+        fetch('/api/customer/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, phoneNumber: phone, password })
+        }).then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || 'Registration failed');
+            } else {
+                showToast('Registration initiated. Please check your email for OTP.');
+                hideAllAuthForms();
+                document.getElementById('otp-email-verify').value = email;
+                document.getElementById('otp-form-container').style.display = 'block';
+            }
+        }).catch(err => console.error(err));
+    }
+
+    // OTP Verification Form
+    if (target.id === 'otp-form') {
+        e.preventDefault();
+        const email = document.getElementById('otp-email-verify').value;
+        const otp = document.getElementById('verify-otp-input').value;
+
+        fetch('/api/customer/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, otp })
+        }).then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || 'Invalid OTP');
+            } else {
+                showToast('Account verified successfully! 🎉');
+                localStorage.setItem('glowcare_customer_email', email);
+                updateNavbar();
+                openAuth();
+            }
+        }).catch(err => console.error(err));
+    }
+
+    // Forgot Password Submit (Send OTP)
+    if (target.id === 'forgot-form') {
+        e.preventDefault();
+        const email = document.getElementById('forgot-email').value;
+
+        fetch('/api/customer/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ emailOrPhone: email })
+        }).then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || 'User not found');
+            } else {
+                showToast('OTP sent to your email.');
+                hideAllAuthForms();
+                document.getElementById('forgot-otp-email').value = data.email;
+                document.getElementById('forgot-otp-form-container').style.display = 'block';
+            }
+        }).catch(err => console.error(err));
+    }
+
+    // Verify Forgot Password OTP
+    if (target.id === 'forgot-otp-form') {
+        e.preventDefault();
+        const email = document.getElementById('forgot-otp-email').value;
+        const otp = document.getElementById('forgot-otp-input').value;
+
+        fetch('/api/customer/verify-forgot-password-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, otp })
+        }).then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || 'Invalid OTP');
+            } else {
+                showToast('OTP Verified. Please create a new password.');
+                hideAllAuthForms();
+                document.getElementById('reset-email').value = email;
+                document.getElementById('reset-otp').value = otp;
+                document.getElementById('new-password-form-container').style.display = 'block';
+            }
+        }).catch(err => console.error(err));
+    }
+
+    // Reset Password Form
+    if (target.id === 'new-password-form') {
+        e.preventDefault();
+        const email = document.getElementById('reset-email').value;
+        const otp = document.getElementById('reset-otp').value;
+        const newPassword = document.getElementById('new-pass-input').value;
+
+        fetch('/api/customer/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, otp, newPassword })
+        }).then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                alert(data.error || 'Password reset failed');
+            } else {
+                showToast('Password reset successfully! ✨');
+                hideAllAuthForms();
+                document.getElementById('login-form-container').style.display = 'block';
+            }
+        }).catch(err => console.error(err));
     }
 
     // Profile Form
@@ -570,20 +855,75 @@ if (newsletterForm) {
 }
 
 // Smooth Scroll
-document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         const targetId = this.getAttribute('href');
-        if (targetId === '#') return;
-        e.preventDefault();
-        const target = document.querySelector(targetId);
-        if (target) {
-            window.scrollTo({
-                top: target.offsetTop - header.offsetHeight,
-                behavior: 'smooth'
-            });
+        if (targetId === '#' || targetId === '#shop' || targetId.startsWith('#')) {
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: target.offsetTop - header.offsetHeight,
+                    behavior: 'smooth'
+                });
+            }
         }
     });
 });
+
+// --- HERO SLIDER LOGIC ---
+function initHeroSlider() {
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.hero-dots .dot');
+    const prevBtn = document.querySelector('.nav-prev');
+    const nextBtn = document.querySelector('.nav-next');
+
+    if (!slides.length) return;
+
+    let currentSlide = 0;
+    let slideInterval = setInterval(nextSlide, 5000);
+
+    function showSlide(n) {
+        slides[currentSlide].classList.remove('active');
+        dots[currentSlide].classList.remove('active');
+        currentSlide = (n + slides.length) % slides.length;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+        nextSlide();
+        resetInterval();
+    });
+
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+        prevSlide();
+        resetInterval();
+    });
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            showSlide(index);
+            resetInterval();
+        });
+    });
+
+    function resetInterval() {
+        clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 7000);
+    }
+}
+
+// Initialize Hero Slider
+initHeroSlider();
 
 // --- GLOWY AI CHATBOT LOGIC ---
 const glowyWidget = document.getElementById('glowy-chatbot');
@@ -646,6 +986,24 @@ function dragEnd(e) {
     initialX = currentX;
     initialY = currentY;
     isDragging = false;
+}
+
+// --- MOBILE MENU TOGGLE ---
+const mobileMenuTrigger = document.getElementById('mobile-menu-trigger');
+const nav = document.querySelector('nav');
+
+if (mobileMenuTrigger && nav) {
+    mobileMenuTrigger.addEventListener('click', () => {
+        nav.classList.toggle('active');
+        const icon = mobileMenuTrigger.querySelector('i');
+        if (nav.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-xmark');
+        } else {
+            icon.classList.remove('fa-xmark');
+            icon.classList.add('fa-bars');
+        }
+    });
 }
 
 // AI Logic & Knowledge Base
@@ -1024,3 +1382,209 @@ setInterval(updateSkinSync, 1000);
 updateClimate(); // Initial call
 setInterval(updateClimate, 600000);
 
+// --- CLICK & SCAN FEATURE LOGIC ---
+const scanModal = document.getElementById('scan-modal');
+const scanVideo = document.getElementById('scan-video');
+const scanProgressBar = document.getElementById('scan-progress-bar');
+const scanStatus = document.getElementById('scan-status');
+const scanViews = document.querySelectorAll('.scan-view');
+const scanTriggers = [
+    document.getElementById('click-scan-trigger'),
+    document.getElementById('click-scan-trigger-hair')
+];
+
+let scanStream = null;
+
+function openScanModal() {
+    scanModal?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showScanView('scan-init');
+}
+
+function closeScanModal() {
+    scanModal?.classList.remove('active');
+    document.body.style.overflow = '';
+    stopCamera();
+}
+
+function showScanView(viewId) {
+    scanViews.forEach(v => v.classList.remove('active'));
+    document.getElementById(viewId)?.classList.add('active');
+}
+
+async function startCamera() {
+    try {
+        scanStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'user' },
+            audio: false
+        });
+        if (scanVideo) scanVideo.srcObject = scanStream;
+    } catch (err) {
+        console.error("Camera access denied:", err);
+        showToast("Camera access is required for analysis!", "fa-triangle-exclamation");
+        closeScanModal();
+    }
+}
+
+function stopCamera() {
+    if (scanStream) {
+        scanStream.getTracks().forEach(track => track.stop());
+        scanStream = null;
+    }
+}
+
+async function startScanning(type) {
+    showScanView('scan-active');
+    await startCamera();
+
+    let progress = 0;
+    const duration = 5000; // 5 seconds
+    const interval = 50;
+    const step = (interval / duration) * 100;
+
+    const scanInterval = setInterval(() => {
+        progress += step;
+        if (scanProgressBar) scanProgressBar.style.width = `${progress}%`;
+
+        // Update status text dynamically
+        if (progress < 30) scanStatus.textContent = "Detecting facial features...";
+        else if (progress < 60) scanStatus.textContent = `Analyzing ${type} texture...`;
+        else if (progress < 90) scanStatus.textContent = "Processing with AI models...";
+
+        if (progress >= 100) {
+            clearInterval(scanInterval);
+            finishScanning(type);
+        }
+    }, interval);
+}
+
+function finishScanning(type) {
+    stopCamera();
+    generateReport(type);
+    showScanView('scan-report');
+}
+
+function generateReport(type) {
+    const metricsContainer = document.getElementById('report-metrics');
+    const productContainer = document.getElementById('report-products');
+    const reportTitle = document.getElementById('report-title');
+    const reportIcon = document.getElementById('report-type-icon');
+
+    if (!metricsContainer || !productContainer) return;
+
+    metricsContainer.innerHTML = '';
+    productContainer.innerHTML = '';
+
+    // Set Date
+    const now = new Date();
+    document.getElementById('report-date').textContent = `Generated on ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}`;
+
+    if (type === 'skin') {
+        reportTitle.textContent = "Skin Analysis Report";
+        reportIcon.className = "fa-solid fa-face-smile";
+
+        const metrics = [
+            { label: "Acne Level", value: "Low", score: 85 },
+            { label: "Pigmentation", value: "Moderate", score: 72 },
+            { label: "Oil Level", value: "Normal", score: 90 },
+            { label: "Hydration", value: "Good", score: 88 },
+            { label: "Overall Score", value: "84/100", score: 84 }
+        ];
+
+        metrics.forEach(m => {
+            metricsContainer.innerHTML += `
+                <div class="metric-card">
+                    <span class="metric-label">${m.label}</span>
+                    <div class="metric-value">${m.value}</div>
+                </div>
+            `;
+        });
+
+        // Recommended Skin Products
+        const recs = [
+            { id: 101, name: "Face Serum", price: 499, img: "images/face-serum.png" },
+            { id: 4, name: "Face Moisturizer", price: 699, img: "images/face-moisturizer.png" },
+            { id: 1, name: "Face Wash", price: 499, img: "images/face-wash.png" }
+        ];
+
+        recs.forEach(p => {
+            productContainer.innerHTML += `
+                <div class="product-card" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                    <div class="product-image-wrapper">
+                        <img src="${p.img}" alt="${p.name}" class="product-image">
+                        <div class="quick-add">Quick Add +</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 style="font-size:0.9rem;">${p.name}</h3>
+                        <p class="price">Rs. ${p.price}.00</p>
+                    </div>
+                </div>
+            `;
+        });
+
+    } else {
+        reportTitle.textContent = "Hair Analysis Report";
+        reportIcon.className = "fa-solid fa-wind";
+
+        const metrics = [
+            { label: "Hair Fall", value: "Moderate", score: 65 },
+            { label: "Dandruff", value: "Low", score: 92 },
+            { label: "Dryness", value: "High", score: 45 },
+            { label: "Strength", value: "Fair", score: 70 },
+            { label: "Overall Score", value: "68/100", score: 68 }
+        ];
+
+        metrics.forEach(m => {
+            metricsContainer.innerHTML += `
+                <div class="metric-card">
+                    <span class="metric-label">${m.label}</span>
+                    <div class="metric-value">${m.value}</div>
+                </div>
+            `;
+        });
+
+        // Recommended Hair Products
+        const recs = [
+            { id: 201, name: "Hair Oil", price: 499, img: "images/hair-oil.png" },
+            { id: 205, name: "Dandruff Free Oil", price: 699, img: "images/dandruff-free-oil.png" },
+            { id: 204, name: "Conditioner", price: 799, img: "images/hair-conditioner.png" }
+        ];
+
+        recs.forEach(p => {
+            productContainer.innerHTML += `
+                <div class="product-card" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                    <div class="product-image-wrapper">
+                        <img src="${p.img}" alt="${p.name}" class="product-image">
+                        <div class="quick-add">Quick Add +</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 style="font-size:0.9rem;">${p.name}</h3>
+                        <p class="price">Rs. ${p.price}.00</p>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // Re-init quick adds for new cards
+    initQuickAdd();
+}
+
+function resetScan() {
+    showScanView('scan-init');
+}
+
+// Event Listeners
+scanTriggers.forEach(btn => {
+    btn?.addEventListener('click', openScanModal);
+});
+
+document.getElementById('close-scan-btn')?.addEventListener('click', closeScanModal);
+document.getElementById('reset-scan-btn')?.addEventListener('click', resetScan);
+document.getElementById('start-hair-scan')?.addEventListener('click', () => startScanning('hair'));
+document.getElementById('start-skin-scan')?.addEventListener('click', () => startScanning('skin'));
+
+// Click outside to close
+window.addEventListener('click', (e) => {
+    if (e.target === scanModal) closeScanModal();
+});

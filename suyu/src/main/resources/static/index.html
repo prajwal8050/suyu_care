@@ -36,6 +36,8 @@
                     </div>
                 </li>
                 <li><a href="doctor.html">Consult</a></li>
+                <li><a href="ingredients.html" class="nav-highlight-link"><i class="fa-solid fa-flask"></i> Interaction
+                        Checker</a></li>
                 <li><a href="javascript:void(0)" id="open-ritual" style="font-weight: 700;">Ritual</a></li>
                 <li><a href="javascript:void(0)" id="open-skinsync" style="font-weight: 700;"><i
                             class="fa-solid fa-dna"></i> Skin-Sync</a></li>
@@ -44,9 +46,30 @@
         </nav>
         <div class="header-icons">
             <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
-            <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+            <div class="user-dropdown" id="login-dropdown">
+                <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="admin.html"><i class="fa-solid fa-shield-halved"></i> Admin Login</a>
+                    <a href="admin.html"><i class="fa-solid fa-user-tie"></i> Agent Login</a>
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-user-check"></i> Customer
+                        Login</a>
+                </div>
+            </div>
+            <div class="user-dropdown" id="profile-dropdown" style="display: none;">
+                <a href="javascript:void(0)" id="profile-icon-btn"><i class="fa-solid fa-circle-user"
+                        style="color: #8b6e4e;"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-id-card"></i> View
+                        Profile</a>
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-clock-history"></i>
+                        History</a>
+                    <a href="javascript:void(0)" id="nav-logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
             <a href="javascript:void(0)" id="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span
                     class="cart-count">0</span></a>
+            <button id="mobile-menu-trigger" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
         </div>
     </header>
 
@@ -68,16 +91,48 @@
 
     <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-slide active" style="background-image: url('images/hero-bg-forest.jpg');">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <h2>Superfoods For <br>Your Skin</h2>
-                <p>Experience the power of Astaxanthin, 6000x stronger than Vitamin C. Truly organic, scientifically
-                    validated, and ethically crafted.</p>
-                <div class="hero-btns">
-                    <a href="#shop" class="btn">Shop Collection</a>
+        <!-- Hero Slides -->
+        <div class="hero-slider">
+            <!-- Slide 1: Skincare -->
+            <div class="hero-slide active" style="background-image: url('images/hero-bg-forest.jpg');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <span class="hero-tag">Best Seller Collection</span>
+                    <h2>Superfoods For <br>Your Skin</h2>
+                    <p>Experience the power of Astaxanthin, 6000x stronger than Vitamin C. Truly organic, scientifically
+                        validated, and ethically crafted.</p>
+                    <div class="hero-btns">
+                        <a href="#shop" class="btn">Shop Collection</a>
+                        <button id="click-scan-trigger" class="btn btn-highlight"><i class="fa-solid fa-camera"></i>
+                            Click & Scan</button>
+                    </div>
                 </div>
             </div>
+            <!-- Slide 2: Haircare -->
+            <div class="hero-slide" style="background-image: url('images/hero-bg-brand.png');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <span class="hero-tag">New Haircare Collection</span>
+                    <h2>Nature's Power <br>For Your Hair</h2>
+                    <p>Revitalize your tresses with potent botanical infusions and superfood extracts. Healthier,
+                        thicker hair starts here.</p>
+                    <div class="hero-btns">
+                        <a href="haircare.html" class="btn">Explore Haircare</a>
+                        <button id="click-scan-trigger-hair" class="btn btn-highlight"><i
+                                class="fa-solid fa-camera"></i> Click & Scan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Nav -->
+        <div class="hero-nav">
+            <button class="nav-prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-next"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="hero-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
         </div>
     </section>
 
@@ -338,40 +393,40 @@
             <div class="divider"></div>
         </div>
         <div class="product-grid">
-            <div class="product-card">
+            <div class="product-card blog-card" onclick="openBlog('blog-astaxanthin')">
                 <div class="product-image-wrapper">
-                    <img src="images/blog-1.png" alt="Blog 1" class="product-image">
+                    <img src="images/blog-1.png" alt="Astaxanthin" class="product-image blog-img">
+                    <div class="blog-date">Mar 05, 2026</div>
                 </div>
                 <div class="product-info">
-                    <span style="font-size: 0.8rem; color: var(--accent-dark);">Skincare Tips</span>
-                    <h3 style="margin-top: 10px;">The Magic of Astaxanthin: Why Your Skin Needs It</h3>
-                    <a href="#"
-                        style="color: var(--text-color); font-weight: 600; text-decoration: none; display: block; margin-top: 10px;">Read
-                        More →</a>
+                    <span class="blog-category">Skincare Tips</span>
+                    <h3 class="blog-title">The Magic of Astaxanthin: Why Your Skin Needs It</h3>
+                    <p class="blog-excerpt">Discover why this super-antioxidant is better than Vitamin C...</p>
+                    <a href="javascript:void(0)" class="read-more-link">Read More →</a>
                 </div>
             </div>
-            <div class="product-card">
+            <div class="product-card blog-card" onclick="openBlog('blog-reishi')">
                 <div class="product-image-wrapper">
-                    <img src="images/blog-2.png" alt="Blog 2" class="product-image">
+                    <img src="images/blog-2.png" alt="Reishi" class="product-image blog-img">
+                    <div class="blog-date">Feb 28, 2026</div>
                 </div>
                 <div class="product-info">
-                    <span style="font-size: 0.8rem; color: var(--accent-dark);">New Launch</span>
-                    <h3 style="margin-top: 10px;">Mushrooms in Skincare: A Deep Dive into Reishi</h3>
-                    <a href="#"
-                        style="color: var(--text-color); font-weight: 600; text-decoration: none; display: block; margin-top: 10px;">Read
-                        More →</a>
+                    <span class="blog-category">New Launch</span>
+                    <h3 class="blog-title">Mushrooms in Skincare: A Deep Dive into Reishi</h3>
+                    <p class="blog-excerpt">The "Mushroom of Immortality" is the new hydration hero...</p>
+                    <a href="javascript:void(0)" class="read-more-link">Read More →</a>
                 </div>
             </div>
-            <div class="product-card">
+            <div class="product-card blog-card" onclick="openBlog('blog-packaging')">
                 <div class="product-image-wrapper">
-                    <img src="images/blog-3.png" alt="Blog 3" class="product-image">
+                    <img src="images/blog-3.png" alt="Packaging" class="product-image blog-img">
+                    <div class="blog-date">Feb 20, 2026</div>
                 </div>
                 <div class="product-info">
-                    <span style="font-size: 0.8rem; color: var(--accent-dark);">Eco-Beauty</span>
-                    <h3 style="margin-top: 10px;">Sustainable Packaging: Our Footprint on Earth</h3>
-                    <a href="#"
-                        style="color: var(--text-color); font-weight: 600; text-decoration: none; display: block; margin-top: 10px;">Read
-                        More →</a>
+                    <span class="blog-category">Eco-Beauty</span>
+                    <h3 class="blog-title">Sustainable Packaging: Our Footprint on Earth</h3>
+                    <p class="blog-excerpt">How we are redesigning beauty to save our planet...</p>
+                    <a href="javascript:void(0)" class="read-more-link">Read More →</a>
                 </div>
             </div>
         </div>
@@ -431,6 +486,8 @@
                     <li><a href="#">Astaxanthin</a></li>
                     <li><a href="#">Environment Friendly</a></li>
                     <li><a href="doctor.html">Consult Doctor</a></li>
+                    <li><a href="doctor-join.html" style="color: var(--glow-gold); font-weight: 600;">Partner
+                            Program</a></li>
                     <li><a href="lab.html">Glow Lab</a></li>
                     <li><a href="dashboard.html">Agent Dashboard</a></li>
                     <li><a href="admin.html" style="color: var(--accent-dark); font-weight: 600;">Admin Control</a>
@@ -718,8 +775,141 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <script src="script.js"></script>
+    <!-- Blog Post Modals -->
+    <div id="blog-astaxanthin" class="modal" style="z-index: 10005;">
+        <div class="modal-content" style="max-width: 800px; padding: 40px;">
+            <span class="close-btn" onclick="closeBlog('blog-astaxanthin')">&times;</span>
+            <img src="images/blog-1.png" alt="Astaxanthin"
+                style="width: 100%; border-radius: 12px; margin-bottom: 25px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">The Magic of
+                Astaxanthin</h2>
+            <div style="line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>Astaxanthin is the most powerful antioxidant known to science. Found primarily in microalgae, it
+                    is what gives salmon and flamingos their vibrant color. For human skin, it is a
+                    revolutionary shield against daily damage.</p>
+                <p style="margin-top: 15px;"><strong>Why is it better than Vitamin C?</strong> While Vitamin C is a
+                    great nutrient, Astaxanthin is 6,000 times stronger and more stable. It doesn't just neutralize
+                    free
+                    radicals; it creates a protective barrier across the entire cell membrane.</p>
+                <p style="margin-top: 15px;">GlowCare stabilizes this superfood in our Radiance Serums so you get
+                    deep protection while achieving a faster, longer-lasting glow.</p>
+                <div
+                    style="margin-top: 30px; padding: 20px; background: #fef9f5; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+                    <img src="images/face-serum.png" style="height: 60px; width: 60px; object-fit: contain;">
+                    <div>
+                        <h4 style="margin: 0; font-size: 0.9rem;">Featured Product</h4>
+                        <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">Radiance Serum with Astaxanthin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blog-reishi" class="modal" style="z-index: 10005;">
+        <div class="modal-content" style="max-width: 800px; padding: 40px;">
+            <span class="close-btn" onclick="closeBlog('blog-reishi')">&times;</span>
+            <img src="images/blog-2.png" alt="Reishi Mushroom"
+                style="width: 100%; border-radius: 12px; margin-bottom: 25px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">The Power of
+                Reishi Mushrooms</h2>
+            <div style="line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>Known as the "Mushroom of Immortality" in traditional medicine, Reishi (Ganoderma lucidum)
+                    has become a cornerstone for high-performance skinsync rituals.</p>
+                <p style="margin-top: 15px;"><strong>The Hydration Hero:</strong> Reishi is packed with
+                    beta-glucans, which are even more effective at locking in moisture than hyaluronic acid. This
+                    makes it perfect for repairing the skin barrier and soothing inflammation.</p>
+                <p style="margin-top: 15px;">At GlowCare, we include Reishi in our Face Masks to ensure your skin
+                    stays hydrated and resilient against environmental stressors.</p>
+                <div
+                    style="margin-top: 30px; padding: 20px; background: #fef9f5; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+                    <img src="images/face-mask.png" style="height: 60px; width: 60px; object-fit: contain;">
+                    <div>
+                        <h4 style="margin: 0; font-size: 0.9rem;">Featured Product</h4>
+                        <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">Reishi Infused Hydration Mask</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blog-packaging" class="modal" style="z-index: 10005;">
+        <div class="modal-content" style="max-width: 800px; padding: 40px;">
+            <span class="close-btn" onclick="closeBlog('blog-packaging')">&times;</span>
+            <img src="images/blog-3.png" alt="Sustainable Packaging"
+                style="width: 100%; border-radius: 12px; margin-bottom: 25px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">
+                Eco-Conscious Packaging</h2>
+            <div style="line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>At GlowCare, we believe that beauty shouldn't come at the cost of the planet.
+                    Our packaging is 100% recyclable, and we use biodegradable inks and sustainable materials.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Click & Scan Feature Modal -->
+    <div id="scan-modal" class="scan-overlay">
+        <div class="scan-container">
+            <button id="close-scan-btn" class="scan-close">&times;</button>
+            <div id="scan-init" class="scan-view active">
+                <div class="scan-intro">
+                    <span class="scan-tag">AI Powered Analysis</span>
+                    <h1>Click & Scan</h1>
+                    <p>Instant skin and hair analysis using advanced machine learning. Get personal recommendations in
+                        seconds.</p>
+                    <div class="scan-options">
+                        <div class="scan-opt hair" id="start-hair-scan">
+                            <i class="fa-solid fa-wind"></i>
+                            <span>Hair Scan</span>
+                            <small>Analyze fall & health</small>
+                        </div>
+                        <div class="scan-opt skin" id="start-skin-scan">
+                            <i class="fa-solid fa-face-smile"></i>
+                            <span>Skin Scan</span>
+                            <small>Analyze acne & glow</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scan-active" class="scan-view">
+                <div class="camera-wrapper">
+                    <video id="scan-video" autoplay playsinline muted></video>
+                    <div class="scan-overlay-graphic">
+                        <div class="scan-scanner-line"></div>
+                        <div class="scan-corners">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="scan-controls">
+                    <div class="scan-progress-container">
+                        <div id="scan-progress-bar"></div>
+                    </div>
+                    <p id="scan-status">Analyzing your features...</p>
+                </div>
+            </div>
+
+            <div id="scan-report" class="scan-view">
+                <div class="report-header">
+                    <div class="report-icon"><i id="report-type-icon" class="fa-solid fa-check"></i></div>
+                    <h2 id="report-title">Your Analysis Report</h2>
+                    <p id="report-date">Generated on Mar 5, 2026</p>
+                </div>
+                <div id="report-metrics" class="report-metrics">
+                    <!-- Metrics will be injected here -->
+                </div>
+                <div class="report-recommendations">
+                    <h3>Recommended For You</h3>
+                    <div id="report-products" class="report-product-grid">
+                        <!-- Products will be injected here -->
+                    </div>
+                </div>
+                <button class="btn scan-reset-btn" id="reset-scan-btn">Scan Again</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>

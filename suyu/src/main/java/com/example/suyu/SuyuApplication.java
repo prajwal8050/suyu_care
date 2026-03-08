@@ -9,5 +9,4 @@ public class SuyuApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SuyuApplication.class, args);
 	}
-
 }

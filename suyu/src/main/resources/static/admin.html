@@ -312,6 +312,7 @@
             <li onclick="switchTab('agents')"><i class="fa-solid fa-user-tie"></i> Agents</li>
             <li onclick="switchTab('products')"><i class="fa-solid fa-box"></i> Products</li>
             <li onclick="switchTab('specialists')"><i class="fa-solid fa-user-doctor"></i> Specialists</li>
+            <li onclick="switchTab('partners')"><i class="fa-solid fa-handshake"></i> Partners & Docs</li>
             <li onclick="switchTab('revenue')"><i class="fa-solid fa-money-bill-trend-up"></i> Sales & Revenue</li>
             <li onclick="switchTab('logs')"><i class="fa-solid fa-clock-rotate-left"></i> System Logs</li>
             <li onclick="adminLogout()" style="margin-top: 50px; color: var(--danger);"><i
@@ -514,18 +515,10 @@
                                 style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
                         </div>
                         <div class="form-group">
-                            <label style="color: #888; display: block; margin-bottom: 8px;">Profile Photo</label>
-                            <div style="display: flex; gap: 15px; align-items: center;">
-                                <div id="doc-image-preview"
-                                    style="width: 60px; height: 60px; background: #0b0b1a; border: 1px dashed #444; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-                                    <i class="fa-solid fa-user-doctor" style="color: #333; font-size: 1.2rem;"></i>
-                                </div>
-                                <input type="file" id="doc-file-upload" accept="image/*" style="display: none;">
-                                <button type="button" onclick="document.getElementById('doc-file-upload').click()"
-                                    style="background: #444; color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">
-                                    Upload Photo
-                                </button>
-                            </div>
+                            <label style="color: #888; display: block; margin-bottom: 8px;">Clinic/Practice
+                                Address</label>
+                            <input type="text" id="doc-address-manual" placeholder="e.g. 123 Health St, Mumbai"
+                                style="width: 100%; padding: 12px; background: #0b0b1a; border: 1px solid #333; color: white; border-radius: 8px;">
                         </div>
                     </div>
                     <div style="margin-top: 20px; display: flex; gap: 15px;">
@@ -541,15 +534,54 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Photo</th>
                         <th>Name</th>
                         <th>Designation</th>
+                        <th>Address</th>
                         <th>Experience</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="admin-doc-table">
                     <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Partners Management -->
+        <div id="partners-tab" class="page-section">
+            <div class="section-header">
+                <h2>Partner Applications & Directory</h2>
+            </div>
+
+            <h3 style="color: var(--admin-accent); margin-bottom: 15px;">Pending Approvals</h3>
+            <table style="margin-bottom: 40px;">
+                <thead>
+                    <tr>
+                        <th>Clinic/Doctor</th>
+                        <th>Contact</th>
+                        <th>City</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-pending-partners-table">
+                    <!-- Dynamic -->
+                </tbody>
+            </table>
+
+            <h3 style="color: var(--success); margin-bottom: 15px;">Active Subscribed Partners</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Clinic/Doctor</th>
+                        <th>Contact</th>
+                        <th>Revenue</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-active-partners-table">
+                    <!-- Dynamic -->
                 </tbody>
             </table>
         </div>
@@ -762,24 +794,15 @@
             const name = document.getElementById('doc-name').value;
             const designation = document.getElementById('doc-designation').value;
             const experience = document.getElementById('doc-exp').value;
-
-            const fileInput = document.getElementById('doc-file-upload');
-            let imageUrl = 'images/default-doc.png';
-
-            if (fileInput.files && fileInput.files[0]) {
-                imageUrl = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => resolve(ev.target.result);
-                    reader.readAsDataURL(fileInput.files[0]);
-                });
-            }
+            const address = document.getElementById('doc-address-manual').value || 'GlowCare Clinic';
 
             const newDoc = {
                 id: 'DOC-' + Date.now(),
                 name: name,
                 designation: designation,
                 experience: experience,
-                image: imageUrl
+                address: address,
+                image: 'images/default-doc.png'
             };
 
             let docs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
@@ -789,7 +812,6 @@
             logActivity('Specialist Added: ' + name);
             alert('Specialist added successfully! 🏥');
             e.target.reset();
-            document.getElementById('doc-image-preview').innerHTML = '<i class="fa-solid fa-user-doctor" style="color: #333; font-size: 1.2rem;"></i>';
             toggleAddSpecialistForm();
             refreshDashboard();
         };
@@ -810,9 +832,12 @@
             const blockedAgents = JSON.parse(localStorage.getItem('glowcare_blocked_agents')) || [];
             const addedProducts = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
             const addedDocs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+            const pendingPartners = JSON.parse(localStorage.getItem('glowcare_pending_partners')) || [];
+            const activePartners = JSON.parse(localStorage.getItem('glowcare_partners')) || [];
 
             // Stats
-            let totalRevenue = orders.reduce((sum, o) => sum + o.total, 0);
+            let partnerRevenue = activePartners.length * 2499;
+            let totalRevenue = orders.reduce((sum, o) => sum + o.total, 0) + partnerRevenue;
             document.getElementById('admin-stat-revenue').textContent = 'Rs. ' + totalRevenue.toLocaleString();
             document.getElementById('admin-stat-orders').textContent = orders.length;
 
@@ -835,6 +860,172 @@
             renderRevenue(orders);
             renderProducts(addedProducts);
             renderSpecialists(addedDocs);
+
+            // Fetch real backend data
+            Promise.all([fetchPendingDoctors(), fetchActiveDoctorsBackend()]).then(([backendPending, backendActive]) => {
+                const combinedPending = [...backendPending, ...pendingPartners];
+                const combinedActive = [...backendActive, ...activePartners];
+                renderPartners(combinedPending, combinedActive);
+            });
+        }
+
+        async function fetchPendingDoctors() {
+            try {
+                const response = await fetch('/api/doctors/pending');
+                if (response.ok) {
+                    const doctors = await response.json();
+                    return doctors.map(d => ({
+                        id: 'DB-' + d.id,
+                        name: d.name,
+                        clinic: d.clinicName,
+                        email: d.email,
+                        city: d.city,
+                        status: d.status,
+                        isBackend: true
+                    }));
+                }
+            } catch (err) {
+                console.error("Error fetching pending doctors:", err);
+            }
+            return [];
+        }
+
+        async function fetchActiveDoctorsBackend() {
+            try {
+                const response = await fetch('/api/doctors/active');
+                if (response.ok) {
+                    const doctors = await response.json();
+                    return doctors.map(d => ({
+                        id: 'DB-' + d.id,
+                        name: d.name,
+                        clinic: d.clinicName,
+                        email: d.email,
+                        city: d.city,
+                        status: d.status,
+                        isBackend: true
+                    }));
+                }
+            } catch (err) {
+                console.error("Error fetching active doctors:", err);
+            }
+            return [];
+        }
+
+        function renderPartners(pending, active) {
+            const pendingBody = document.getElementById('admin-pending-partners-table');
+            const activeBody = document.getElementById('admin-active-partners-table');
+            if (pendingBody) {
+                pendingBody.innerHTML = pending.length ? pending.map(p => `
+                    <tr>
+                        <td><strong>${p.name}</strong><br><small>${p.clinic}</small></td>
+                        <td>${p.email}</td>
+                        <td>${p.city}</td>
+                        <td><span class="badge badge-blocked">${p.status || 'Pending Fee/Verification'}</span></td>
+                        <td>
+                            <button class="btn-action btn-unblock" onclick="${p.isBackend ? `approveBackendDoctor('${p.id.replace('DB-', '')}')` : `approvePartner('${p.id}')`}">Approve</button>
+                            <button class="btn-action btn-block" onclick="${p.isBackend ? `rejectBackendDoctor('${p.id.replace('DB-', '')}')` : `rejectPartner('${p.id}')`}">Reject</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="5" style="text-align:center;">No pending partner requests.</td></tr>';
+            }
+            if (activeBody) {
+                activeBody.innerHTML = active.length ? active.map(p => `
+                    <tr>
+                        <td><strong>${p.name}</strong><br><small>${p.clinic}</small></td>
+                        <td>${p.email}</td>
+                        <td style="color:var(--success);">Rs. 2499 /mo</td>
+                        <td><span class="badge badge-active">Active</span></td>
+                        <td>
+                            <button class="btn-action btn-block" onclick="${p.isBackend ? `revokeBackendDoctor('${p.id.replace('DB-', '')}')` : `revokePartner('${p.id}')`}">Revoke</button>
+                        </td>
+                    </tr>
+                `).join('') : '<tr><td colspan="5" style="text-align:center;">No active partners.</td></tr>';
+            }
+        }
+
+        async function revokeBackendDoctor(id) {
+            if (!confirm('Are you sure you want to revoke this doctor\'s access?')) return;
+            try {
+                const response = await fetch(`/api/doctors/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Revoked' })
+                });
+                if (response.ok) {
+                    logActivity('Backend Doctor Access Revoked ID: ' + id);
+                    refreshDashboard();
+                }
+            } catch (err) {
+                console.error("Error revoking doctor access:", err);
+            }
+        }
+
+        function approvePartner(id) {
+            let pending = JSON.parse(localStorage.getItem('glowcare_pending_partners')) || [];
+            let active = JSON.parse(localStorage.getItem('glowcare_partners')) || [];
+
+            const partner = pending.find(p => p.id === id);
+            if (partner) {
+                partner.status = 'Active';
+                active.push(partner);
+                pending = pending.filter(p => p.id !== id);
+
+                localStorage.setItem('glowcare_pending_partners', JSON.stringify(pending));
+                localStorage.setItem('glowcare_partners', JSON.stringify(active));
+                logActivity('Partner Approved: ' + partner.name);
+                alert(`SUCCESS! Doctor Approved.\n\nThey can now login via the For Doctors portal using the credentials they provided during registration.`);
+                refreshDashboard();
+            }
+        }
+
+        function rejectPartner(id) {
+            let pending = JSON.parse(localStorage.getItem('glowcare_pending_partners')) || [];
+            pending = pending.filter(p => p.id !== id);
+            localStorage.setItem('glowcare_pending_partners', JSON.stringify(pending));
+            logActivity('Partner Rejected: ' + id);
+            refreshDashboard();
+        }
+
+        function revokePartner(id) {
+            let active = JSON.parse(localStorage.getItem('glowcare_partners')) || [];
+            active = active.filter(p => p.id !== id);
+            localStorage.setItem('glowcare_partners', JSON.stringify(active));
+            logActivity('Partner Revoked: ' + id);
+            refreshDashboard();
+        }
+
+        async function approveBackendDoctor(id) {
+            try {
+                const response = await fetch(`/api/doctors/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Active' })
+                });
+                if (response.ok) {
+                    logActivity('Backend Doctor Approved ID: ' + id);
+                    alert('Doctor Approved Successfully! They can now login with their registration password.');
+                    refreshDashboard();
+                }
+            } catch (err) {
+                console.error("Error approving doctor:", err);
+            }
+        }
+
+        async function rejectBackendDoctor(id) {
+            if (!confirm('Are you sure you want to reject this registration?')) return;
+            try {
+                const response = await fetch(`/api/doctors/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: 'Rejected' })
+                });
+                if (response.ok) {
+                    logActivity('Backend Doctor Rejected ID: ' + id);
+                    refreshDashboard();
+                }
+            } catch (err) {
+                console.error("Error rejecting doctor:", err);
+            }
         }
 
         function renderSpecialists(data) {
@@ -842,9 +1033,9 @@
             if (!tbody) return;
             tbody.innerHTML = data.length > 0 ? data.map(d => `
                 <tr>
-                    <td><img src="${d.image}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"></td>
                     <td>${d.name}</td>
                     <td>${d.designation}</td>
+                    <td style="font-size: 0.8rem; color: #888;">${d.address || 'N/A'}</td>
                     <td>${d.experience} Years</td>
                     <td>
                         <button class="btn-action btn-block" onclick="deleteSpecialist('${d.id}')">Remove</button>
