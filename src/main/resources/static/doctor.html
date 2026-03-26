@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare | Digital Doctor Consultation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .doctor-hero {
+            height: 60vh;
+            background-image: url('images/doctor-hero.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+        }
+
+        .doctor-hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .doctor-hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .doctor-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .doctor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 50px 5%;
+        }
+
+        .doctor-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid #f0f0f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .doctor-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .doctor-img-wrapper {
+            height: 320px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+            background: #f8f9fa;
+        }
+
+        .doctor-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+            transition: transform 0.6s ease;
+        }
+
+        .doctor-card:hover .doctor-img {
+            transform: scale(1.05);
+        }
+
+        .exp-badge {
+            position: absolute;
+            bottom: 15px;
+            left: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .doctor-info {
+            padding: 25px 20px;
+            text-align: left;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cert-tag {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #d4af37;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .doctor-info h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            margin-bottom: 5px;
+            color: #1a1a1a;
+        }
+
+        .doctor-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+            flex-grow: 1;
+        }
+
+        .consult-btn {
+            width: 100%;
+            background: var(--text-color);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .consult-btn:hover {
+            background: var(--accent-dark);
+        }
+
+        /* Video Call Overlay */
+        .video-call-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #1a1a1a;
+            z-index: 3000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .video-container {
+            width: 80%;
+            height: 70%;
+            background: #333;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .remote-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .local-video {
+            width: 200px;
+            height: 150px;
+            background: #555;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+
+        .call-controls {
+            display: flex;
+            gap: 30px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .end-call {
+            background: #ff4757;
+        }
+
+        .mute-btn {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <span>Instant Video Consultation | Consult India's Top Skin & Hair Specialists</span>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header" class="scrolled">
+        <div class="logo">
+            <img src="images/logo.png" alt="GLOWCARE Logo">
+            <h1>GLOWCARE</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Collection <i class="fa-solid fa-chevron-down"
+                            style="font-size: 0.6rem; margin-left: 2px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="skincare.html">Skin Care</a>
+                        <a href="haircare.html">Hair Care</a>
+                    </div>
+                </li>
+                <li><a href="doctor.html" class="active">Consult</a></li>
+                <li><a href="ingredients.html" class="nav-highlight-link"><i class="fa-solid fa-flask"></i> Interaction
+                        Checker</a></li>
+                <li><a href="doctor-join.html" style="color: var(--glow-gold); font-weight: bold;">For Doctors</a></li>
+            </ul>
+        </nav>
+        <div class="header-icons">
+            <div class="user-dropdown" id="login-dropdown">
+                <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-user-shield"></i> Customer Login</a>
+                    <a href="javascript:void(0)" onclick="openRegister()"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </div>
+            </div>
+            <div class="user-dropdown" id="profile-dropdown" style="display: none;">
+                <a href="javascript:void(0)" id="profile-icon-btn"><i class="fa-solid fa-circle-user"
+                        style="color: #8b6e4e;"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-id-card"></i> View
+                        Profile</a>
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-clock-history"></i>
+                        History</a>
+                    <a href="javascript:void(0)" id="nav-logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+            <a href="javascript:void(0)" id="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span
+                    class="cart-count">0</span></a>
+        </div>
+    </header>
+
+    <div class="doctor-hero">
+        <div class="doctor-hero-content">
+            <h1>Skin & Hair Consultations</h1>
+            <p>Digital doorstep to glowing skin and healthy hair.</p>
+        </div>
+    </div>
+
+    <section class="section">
+        <div class="section-title">
+            <span class="serif" style="font-size: 1.2rem; color: var(--accent-dark);">Find Dermatologists Near
+                You</span>
+            <h2>Book an Appointment</h2>
+            <div class="divider"></div>
+        </div>
+
+        <div
+            style="max-width: 800px; margin: 0 auto 40px; display: flex; gap: 15px; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.05);">
+            <div
+                style="flex: 1; display: flex; align-items: center; border: 1px solid #ddd; border-radius: 8px; padding: 0 15px;">
+                <i class="fa-solid fa-location-dot" style="color: #666;"></i>
+                <input type="text" id="city-search" placeholder="Enter City (E.g. Mumbai, Delhi)..."
+                    style="width: 100%; border: none; padding: 15px; outline: none; background: transparent;">
+            </div>
+            <button onclick="detectGPS()"
+                style="background: #f0f0f0; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; color: #333; font-weight: 600;"><i
+                    class="fa-solid fa-crosshairs"></i> GPS</button>
+            <button onclick="loadSpecialists()"
+                style="background: var(--text-color); border: none; color: white; padding: 0 30px; border-radius: 8px; cursor: pointer; font-weight: 600; text-transform: uppercase;">Search</button>
+        </div>
+
+        <div class="doctor-grid" id="doctor-list">
+            <!-- Dynamic Content -->
+        </div>
+    </section>
+
+    <!-- Appointment Booking Modal -->
+    <div id="booking-modal" class="video-call-modal" style="background: rgba(0,0,0,0.8);">
+        <div
+            style="background: white; color: #333; width: 90%; max-width: 500px; border-radius: 20px; padding: 40px; position: relative; max-height: 90vh; overflow-y: auto;">
+            <i class="fa-solid fa-times" onclick="closeBookingModal()"
+                style="position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; color: #999;"></i>
+            <h2 id="booking-doc-name" style="margin-bottom: 5px; font-family: 'Playfair Display', serif;"></h2>
+            <p style="color: #666; margin-bottom: 25px;"><i class="fa-solid fa-location-dot"
+                    style="color: var(--accent-dark);"></i> <span id="booking-doc-clinic"></span></p>
+
+            <form id="booking-form">
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Patient
+                        Name</label>
+                    <input type="text" id="patient-name" required
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Contact /
+                        Email</label>
+                    <input type="text" id="patient-contact" required
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Select
+                        Date</label>
+                    <input type="date" id="booking-date" required
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                </div>
+                <div style="margin-bottom: 30px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 0.9rem;">Available
+                        Slots</label>
+                    <select id="booking-slot" required
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                        <!-- Slots dynamic -->
+                    </select>
+                </div>
+
+                <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 30px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span style="color: #666;">Consultation Fee</span>
+                        <strong id="booking-fee">Rs. 0</strong>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    style="width: 100%; padding: 15px; background: var(--text-color); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; text-transform: uppercase;">Confirm
+                    & Book (Pay at Clinic)</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Call Modal -->
+    <div id="video-call" class="video-call-modal">
+        <h2 id="talking-to" style="margin-bottom: 30px;"></h2>
+        <div class="video-container">
+            <img id="doctor-video-placeholder" src="" class="remote-video">
+            <div class="local-video"></div>
+        </div>
+        <div class="call-controls">
+            <div class="control-btn mute-btn"><i class="fa-solid fa-microphone"></i></div>
+            <div class="control-btn end-call" onclick="endCall()"><i class="fa-solid fa-phone-slash"></i></div>
+            <div class="control-btn mute-btn"><i class="fa-solid fa-video"></i></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 20px;">
+                    <h1 style="color: var(--white); font-size: 1.5rem;">GLOWCARE</h1>
+                </div>
+                <p>Digital healthcare for your beauty and wellness.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GLOWCARE India.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentDoctor = null;
+
+        function detectGPS() {
+            // Mock GPS location
+            document.getElementById('city-search').value = 'Mumbai';
+            loadSpecialists();
+            setTimeout(() => alert('Location detected: Mumbai'), 500);
+        }
+
+        async function loadSpecialists() {
+            const listEl = document.getElementById('doctor-list');
+            const cityQuery = document.getElementById('city-search').value.toLowerCase();
+
+            // Fetch backend active doctors
+            let backendActive = [];
+            try {
+                const response = await fetch('/api/doctors/active');
+                if (response.ok) {
+                    const doctors = await response.json();
+                    backendActive = doctors.map(d => ({
+                        id: 'DB-' + d.id,
+                        name: d.name,
+                        image: d.imagePath,
+                        experience: d.experience,
+                        specialization: d.specialization,
+                        clinic: d.clinicName,
+                        address: d.address,
+                        city: d.city,
+                        fee: d.fee,
+                        rating: 4.9,
+                        availableSlots: ['10:00 AM', '12:00 PM', '04:00 PM']
+                    }));
+                }
+            } catch (err) {
+                console.error("Error fetching active doctors:", err);
+            }
+
+            const legacyDocs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+            const partners = JSON.parse(localStorage.getItem('glowcare_partners')) || [];
+
+            const legacyMapped = legacyDocs.map(d => ({
+                id: d.id || 'LEGACY-' + Math.random(),
+                name: d.name,
+                image: d.image,
+                experience: d.experience,
+                specialization: d.designation || 'Specialist',
+                clinic: 'GlowCare Clinic',
+                address: 'Main St',
+                city: 'Global',
+                fee: 500,
+                rating: 4.8,
+                availableSlots: ['10:00 AM', '12:00 PM', '04:00 PM']
+            }));
+
+            let allDocs = [...backendActive, ...partners, ...legacyMapped];
+
+            if (cityQuery) {
+                allDocs = allDocs.filter(d => d.city && d.city.toLowerCase().includes(cityQuery));
+            }
+
+            if (allDocs.length === 0) {
+                listEl.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px; background: #fff; border: 1px dashed #ddd; border-radius: 12px;">
+                        <i class="fa-solid fa-user-doctor" style="font-size: 3rem; color: #eee; margin-bottom: 20px; display: block;"></i>
+                        <h3 style="color: #666;">No specialists found for this location.</h3>
+                        <p style="color: #999;">Try searching for another city.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listEl.innerHTML = allDocs.map(d => `
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <span class="cert-tag" style="background: rgba(212, 175, 55, 0.1); padding: 4px 8px; border-radius: 4px;">${d.specialization} • ${d.experience} Yrs Exp</span>
+                        <h3 style="margin-top: 15px;">${d.name}</h3>
+                        <p style="margin-bottom: 10px;"><i class="fa-solid fa-location-dot" style="color:var(--accent-dark);"></i> ${d.clinic}, ${d.city}</p>
+                        <p style="color:#666; font-size: 0.85rem; margin-bottom: 20px;">Address: ${d.address}</p>
+                        <p style="color:var(--text-color); font-weight:600; margin-bottom: 20px;">Fee: Rs. ${d.fee}</p>
+                        
+                        <div style="display:flex; gap:10px;">
+                            <button class="consult-btn" style="flex: 1; text-align: center; justify-content: center; padding: 12px;" onclick="openBooking('${d.id}')">
+                                <i class="fa-solid fa-calendar-check" style="margin-right: 8px;"></i> Book Appointment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Store temporarily for booking reference
+            window._currentRenderedDocs = allDocs;
+        }
+
+        function openBooking(docId) {
+            const allDocs = window._currentRenderedDocs || [];
+            currentDoctor = allDocs.find(d => d.id === docId);
+
+            if (!currentDoctor) return;
+
+            document.getElementById('booking-doc-name').innerText = currentDoctor.name;
+            document.getElementById('booking-doc-clinic').innerText = `${currentDoctor.clinic}, ${currentDoctor.address}, ${currentDoctor.city}`;
+            document.getElementById('booking-fee').innerText = `Rs. ${currentDoctor.fee}`;
+
+            const slots = currentDoctor.availableSlots && currentDoctor.availableSlots.length > 0
+                ? currentDoctor.availableSlots
+                : ['10:00 AM', '12:00 PM', '04:00 PM'];
+
+            document.getElementById('booking-slot').innerHTML = slots.map(s => `<option value="${s}">${s}</option>`).join('');
+
+            // Pre-fill if logged in
+            const customerEmail = localStorage.getItem('glowcare_customer_email');
+            if (customerEmail) {
+                document.getElementById('patient-contact').value = customerEmail;
+                const profile = JSON.parse(localStorage.getItem('profile_' + customerEmail)) || {};
+                if (profile.name) document.getElementById('patient-name').value = profile.name;
+            }
+
+            document.getElementById('booking-modal').style.display = 'flex';
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+
+        document.getElementById('booking-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const isBackend = String(currentDoctor.id).startsWith('DB-');
+            const doctorId = isBackend ? currentDoctor.id.replace('DB-', '') : currentDoctor.id;
+
+            const appointmentData = {
+                doctorId: doctorId,
+                patientName: document.getElementById('patient-name').value,
+                contact: document.getElementById('patient-contact').value,
+                date: document.getElementById('booking-date').value,
+                time: document.getElementById('booking-slot').value,
+                type: 'In-Clinic Consult',
+                patientEmail: localStorage.getItem('glowcare_customer_email') || ''
+            };
+
+            if (isBackend) {
+                try {
+                    const response = await fetch('/api/appointments', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(appointmentData)
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert('Appointment Sent successfully to the backend!');
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                } catch (err) {
+                    console.error("Booking error:", err);
+                    alert('Server error. Please try again.');
+                }
+            } else {
+                // Legacy local storage fallback
+                let appts = JSON.parse(localStorage.getItem('glowcare_appointments')) || [];
+                appts.push({
+                    ...appointmentData,
+                    id: 'APT-' + Date.now(),
+                    doctorName: currentDoctor.name,
+                    status: 'Pending'
+                });
+                localStorage.setItem('glowcare_appointments', JSON.stringify(appts));
+                alert('Appointment saved locally for legacy doctor!');
+            }
+
+            closeBookingModal();
+        });
+
+        function startCall(name, image) {
+            document.getElementById('video-call').style.display = 'flex';
+            document.getElementById('talking-to').textContent = "Consulting with " + name;
+            document.getElementById('doctor-video-placeholder').src = image || "images/default-doc.png";
+        }
+
+        function endCall() {
+            alert('Consultation completed! 🏥 Your records have been updated in your profile.');
+            document.getElementById('video-call').style.display = 'none';
+        }
+
+        // Initialize
+        loadSpecialists();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow Lab | Intelligent Skincare & Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header id="main-header" class="scrolled">
+        <div class="logo">
+            <img src="images/logo.png" alt="GLOWCARE Logo">
+            <h1>GLOWCARE</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Collection <i class="fa-solid fa-chevron-down"
+                            style="font-size: 0.6rem; margin-left: 2px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="skincare.html">Skin Care</a>
+                        <a href="haircare.html">Hair Care</a>
+                    </div>
+                </li>
+                <li><a href="doctor.html">Consult</a></li>
+                <li><a href="ingredients.html" class="nav-highlight-link"><i class="fa-solid fa-flask"></i> Interaction
+                        Checker</a></li>
+                <li><a href="lab.html" class="active">Glow Lab</a></li>
+            </ul>
+        </nav>
+        <div class="header-icons">
+            <div class="user-dropdown" id="login-dropdown">
+                <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-user-shield"></i> Customer Login</a>
+                    <a href="javascript:void(0)" onclick="openRegister()"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </div>
+            </div>
+            <div class="user-dropdown" id="profile-dropdown" style="display: none;">
+                <a href="javascript:void(0)" id="profile-icon-btn"><i class="fa-solid fa-circle-user"
+                        style="color: #8b6e4e;"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-id-card"></i> View
+                        Profile</a>
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-clock-history"></i>
+                        History</a>
+                    <a href="javascript:void(0)" id="nav-logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+            <a href="javascript:void(0)" id="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span
+                    class="cart-count">0</span></a>
+        </div>
+    </header>
+
+    <div class="lab-container">
+        <div class="section-title">
+            <span class="serif" style="color: var(--accent-dark); font-size: 1.2rem;">Artificial Intelligence</span>
+            <h2>Glow Intelligence Lab</h2>
+            <div class="divider"></div>
+            <p>Advanced metrics, analysis, and personalized tracking for your organic journey.</p>
+        </div>
+
+        <div class="lab-grid">
+            <!-- 1. Integrated Health Score Dashboard -->
+            <div class="lab-card">
+                <h3>My Health Score</h3>
+                <p style="margin-bottom: 30px; opacity: 0.7;">Based on your recent logs and routine consistency.</p>
+                <div class="health-score-ring" id="health-score"></div>
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                    <div>
+                        <h4 style="color: #2e7d32;">85</h4>
+                        <p style="font-size: 0.8rem;">Skin Vitality</p>
+                    </div>
+                    <div>
+                        <h4 style="color: #ef6c00;">65</h4>
+                        <p style="font-size: 0.8rem;">Hair Density</p>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--accent-color);">90</h4>
+                        <p style="font-size: 0.8rem;">Consistency</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Skin & Hair Analysis Quiz -->
+            <div class="lab-card" id="quiz-container">
+                <h3>Analysis Quiz</h3>
+                <p style="margin-bottom: 25px; opacity: 0.7;">Personalize your product recommendations.</p>
+
+                <div class="quiz-step active" data-step="1">
+                    <h4>What is your primary skin concern?</h4>
+                    <div class="quiz-option" onclick="selectOption(this, 1)">Acne & Pimples</div>
+                    <div class="quiz-option" onclick="selectOption(this, 1)">Pigmentation & Dark Spots</div>
+                    <div class="quiz-option" onclick="selectOption(this, 1)">Dryness & Flaking</div>
+                    <div class="quiz-option" onclick="selectOption(this, 1)">Aging & Fine Lines</div>
+                </div>
+
+                <div class="quiz-step" data-step="2">
+                    <h4>Describe your hair type:</h4>
+                    <div class="quiz-option" onclick="selectOption(this, 2)">Oily Scalp, Dry Ends</div>
+                    <div class="quiz-option" onclick="selectOption(this, 2)">Very Dry & Frizzy</div>
+                    <div class="quiz-option" onclick="selectOption(this, 2)">Thinning & Hair Fall</div>
+                    <div class="quiz-option" onclick="selectOption(this, 2)">Normal & Healthy</div>
+                    <button class="btn" style="margin-top: 20px;" onclick="nextStep(3)">Complete Analysis</button>
+                </div>
+
+                <div class="quiz-step" id="quiz-results">
+                    <h4 style="color: var(--accent-color);">Analysis Complete!</h4>
+                    <p id="recommendation-text"></p>
+                    <button class="btn" onclick="resetQuiz()" style="margin-top: 20px;">Retake Quiz</button>
+                </div>
+            </div>
+
+            <!-- 3. Ingredient Safety Checker -->
+            <div class="lab-card">
+                <h3>Safety Checker</h3>
+                <p style="margin-bottom: 20px; opacity: 0.7;">Paste ingredients list to check for toxic chemicals.</p>
+                <textarea class="ingredient-input" id="ingredient-list"
+                    placeholder="e.g. Aqua, Glycerin, Parabens, Sodium Lauryl Sulfate..."></textarea>
+                <button class="btn" style="width: 100%;" onclick="checkSafety()">Check Ingredients</button>
+                <div id="safety-result-panel"></div>
+            </div>
+
+            <!-- 4. Personalized Tracking & Risk Panel -->
+            <div class="lab-card">
+                <h3>Personal Risk Panel</h3>
+                <div class="risk-item">
+                    <i class="fa-solid fa-cloud-sun" style="font-size: 1.5rem; color: #ff9800;"></i>
+                    <div>
+                        <h5 style="margin: 0;">High UV Sensitivity</h5>
+                        <p style="font-size: 0.8rem; margin: 5px 0 0;">Fair skin type detected. Risk of spots increased
+                            today.</p>
+                    </div>
+                </div>
+                <div class="risk-item" style="border-left-color: #2196f3;">
+                    <i class="fa-solid fa-droplet" style="font-size: 1.5rem; color: #2196f3;"></i>
+                    <div>
+                        <h5 style="margin: 0;">Humidity Alert</h5>
+                        <p style="font-size: 0.8rem; margin: 5px 0 0;">85% Humidity. Frizzy hair risk high. Use Hair
+                            Serum.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 40px;">Daily Tracking</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px;">
+                    <button class="tracker-btn" onclick="toggleTracker(this)">Morning Routine</button>
+                    <button class="tracker-btn" onclick="toggleTracker(this)">Night Routine</button>
+                    <button class="tracker-btn" onclick="toggleTracker(this)">Sunscreen Applied</button>
+                    <button class="tracker-btn" onclick="toggleTracker(this)">8 Glasses Water</button>
+                    <button class="tracker-btn" onclick="toggleTracker(this)">Organic Meal</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script sharing same logic for Cart/Auth -->
+    <script src="script.js"></script>
+    <script>
+        // Quiz Logic
+        function selectOption(el, step) {
+            document.querySelectorAll(`.quiz-step[data-step="${step}"] .quiz-option`).forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            if (step === 1) setTimeout(() => nextStep(2), 300);
+        }
+
+        function nextStep(step) {
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            if (step === 3) {
+                document.getElementById('quiz-results').classList.add('active');
+                document.getElementById('recommendation-text').textContent = "Based on your Oily Scalp and Pigmentation concerns, we recommend our Reishi Mushroom Face Wash and Astaxanthin Hair Wax.";
+            } else {
+                document.querySelector(`.quiz-step[data-step="${step}"]`).classList.add('active');
+            }
+        }
+
+        function resetQuiz() {
+            document.querySelectorAll('.quiz-step').forEach(s => s.classList.remove('active'));
+            document.querySelector('.quiz-step[data-step="1"]').classList.add('active');
+            document.querySelectorAll('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+        }
+
+        // Safety Checker Logic
+        function checkSafety() {
+            const list = document.getElementById('ingredient-list').value.toLowerCase();
+            const panel = document.getElementById('safety-result-panel');
+
+            if (!list) return;
+
+            const toxics = ['paraben', 'sulfate', 'sls', 'phthalate', 'formaldehyde'];
+            let found = toxics.filter(t => list.includes(t));
+
+            if (found.length > 0) {
+                panel.innerHTML = `
+                    <div class="safety-result safety-danger">
+                        <strong>Warning!</strong> Found toxic chemicals: ${found.join(', ')}. These may disrupt hormones.
+                    </div>
+                `;
+            } else {
+                panel.innerHTML = `
+                    <div class="safety-result safety-safe">
+                        <strong>Safe!</strong> No commonly known toxic super-irritants found. Your product looks organic-safe.
+                    </div>
+                `;
+            }
+        }
+
+        // Tracker Logic
+        function toggleTracker(btn) {
+            btn.classList.toggle('completed');
+            if (btn.classList.contains('completed')) {
+                btn.innerHTML = btn.innerHTML + ' <i class="fa-solid fa-check"></i>';
+            } else {
+                btn.innerHTML = btn.innerHTML.replace(' <i class="fa-solid fa-check"></i>', '');
+            }
+        }
+    </script>
+</body>
+
+</html>

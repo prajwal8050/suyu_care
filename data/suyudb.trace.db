@@ -1,0 +1,39 @@
+2026-03-26 12:34:15.263139+05:30 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 12:34:18.765804+05:30 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 12:34:29.434732+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 12:36:12.049015+05:30 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 12:36:12.049015+05:30 jdbc[5]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 12:45:59.932127+05:30 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 12:53:17.395341+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 13:39:27.185388+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 13:48:03.607855+05:30 jdbc[4]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 13:49:15.709968+05:30 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 13:53:30.746388+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 13:56:23.551119+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]
+2026-03-26 13:58:12.113923+05:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "IMAGE CHARACTER VARYING(255)": "'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAYACAIAAABn4K39AACk6WNhQlgAA... (552274)"; SQL statement:
+insert into order_item (image,name,price,product_id,quantity,id) values (?,?,?,?,?,default) [22001-240]

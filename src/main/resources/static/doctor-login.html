@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare | Doctor Login</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --glow-gold: #d4af37;
+            --glow-dark: #1a1a1a;
+            --glow-bg: #fffbf5;
+        }
+
+        body {
+            background-color: var(--glow-dark);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #fff;
+        }
+
+        .login-card {
+            background: white;
+            color: var(--glow-dark);
+            width: 100%;
+            max-width: 450px;
+            padding: 50px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--glow-dark);
+        }
+
+        .login-card p {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #fdfdfd;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--glow-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .btn-login {
+            background: var(--glow-dark);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            background: var(--glow-gold);
+        }
+
+        .login-footer {
+            margin-top: 25px;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .login-footer a {
+            color: var(--glow-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-card">
+        <i class="fa-solid fa-user-doctor" style="font-size: 3rem; color: var(--glow-gold); margin-bottom: 20px;"></i>
+        <h1>Partner Login</h1>
+        <p>Access your GlowCare Doctor Dashboard</p>
+
+        <form id="doc-login-form">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="email" placeholder="doctor@clinic.com" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-login">Secure Login</button>
+        </form>
+
+        <div class="login-footer">
+            Not a partner yet? <a href="doctor-join.html">Apply Now</a><br><br>
+            <a href="index.html" style="color: #999;">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('doc-login-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/doctors/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store doctor info for the dashboard
+                    localStorage.setItem('glowcare_active_doctor', JSON.stringify(data.doctor));
+                    window.location.href = 'doctor-dashboard.html';
+                } else {
+                    alert(data.message || 'Login failed. Please try again.');
+                }
+            } catch (err) {
+                console.error("Login error:", err);
+                alert('An error occurred. Please ensure the backend is running.');
+            }
+        });
+    </script>
+</body>
+
+</html>

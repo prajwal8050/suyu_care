@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GlowCare Agent Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Login Overlay */
+        #agent-auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #2C3639;
+            z-index: 5000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .auth-card h2 {
+            margin-bottom: 10px;
+            text-align: center;
+            color: var(--text-color);
+        }
+
+        .auth-card p {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #2C3639;
+            color: white;
+            padding: 30px 0;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar-logo {
+            padding: 0 30px 40px;
+            text-align: center;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            flex: 1;
+        }
+
+        .sidebar-menu li {
+            padding: 15px 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.95rem;
+            opacity: 0.8;
+        }
+
+        .sidebar-menu li:hover,
+        .sidebar-menu li.active {
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 1;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .main-dashboard {
+            flex: 1;
+            margin-left: 250px;
+            padding: 40px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .page-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+            vertical-align: top;
+        }
+
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-processing {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-shipped {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .status-delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .btn-small {
+            padding: 5px 12px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Agent Auth Overlay -->
+    <div id="agent-auth-overlay">
+        <div class="auth-card" id="agent-login-container">
+            <h2>Agent Login</h2>
+            <p>Access the GlowCare Brand Management System</p>
+            <form id="agent-login-form">
+                <div class="form-group">
+                    <label>Email ID</label>
+                    <input type="email" id="agent-email" placeholder="agent@glowcare.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Access Key</label>
+                    <input type="password" id="agent-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Login to Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <h2 style="color: var(--accent-color);">GlowCare Agent</h2>
+        </div>
+        <ul class="sidebar-menu">
+            <li class="active" onclick="showSection('overview')"><i class="fa-solid fa-chart-line"></i> Overview</li>
+            <li onclick="showSection('orders')"><i class="fa-solid fa-truck-fast"></i> Customer Orders</li>
+            <li onclick="showSection('doctors')"><i class="fa-solid fa-user-doctor"></i> Manage Doctors</li>
+            <li onclick="showSection('products')"><i class="fa-solid fa-box-open"></i> Manage Products</li>
+            <li onclick="logoutAgent()"><i class="fa-solid fa-right-from-bracket"></i> Logout</li>
+        </ul>
+    </div>
+
+    <div class="main-dashboard">
+        <div class="dashboard-header">
+            <h1>Agent Dashboard</h1>
+            <div class="user-profile">
+                <span id="agent-display-name">Welcome, Agent Admin</span>
+            </div>
+        </div>
+
+        <div id="overview-section" class="page-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Sales</h3>
+                    <div class="number" id="stat-total-sales">Rs. 0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Orders</h3>
+                    <div class="number" id="stat-total-orders">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Active Doctors</h3>
+                    <div class="number" id="stat-total-doctors">2</div>
+                </div>
+                <div class="stat-card">
+                    <h3>Products</h3>
+                    <div class="number" id="stat-total-products">15</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div id="orders-section" class="page-section">
+            <div class="section-header">
+                <h2>Customer Orders</h2>
+                <p>Manage shipping and fulfillment of orders.</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Address</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                    <!-- Orders will be injected here -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Manage Doctors Section -->
+        <div id="doctors-section" class="page-section">
+            <div class="section-header">
+                <h2>Specialist Directory</h2>
+                <button class="btn" onclick="openDoctorModal()">+ Add New Specialist</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Photo</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Experience</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="doctor-table-body">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Manage Products Section -->
+        <div id="products-section" class="page-section">
+            <div class="section-header">
+                <h2>Brand Inventory</h2>
+                <button class="btn" onclick="openProductModal()">+ Add New Product</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Preview</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody id="product-table-body">
+                    <!-- Dynamic Data -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="add-doctor-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px; padding: 30px; border-radius: 15px;">
+            <span class="close-btn" onclick="closeModal('add-doctor-modal')">&times;</span>
+            <h2 style="margin-bottom: 25px; color: #1a1a1a;">Register New Specialist</h2>
+            <form id="add-doctor-form">
+                <div
+                    style="display: flex; gap: 20px; align-items: center; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 10px;">
+                    <div id="doc-preview"
+                        style="width: 70px; height: 70px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 2px solid var(--accent-color);">
+                        <i class="fa-solid fa-user-doctor" style="font-size: 1.5rem; color: #ccc;"></i>
+                    </div>
+                    <div>
+                        <input type="file" id="doc-file" accept="image/*" style="display: none;">
+                        <button type="button" class="btn btn-small"
+                            onclick="document.getElementById('doc-file').click()" style="background: #333;">Upload
+                            Photo</button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Full Name</label><input type="text" id="doc-name-input" required
+                        placeholder="e.g. Dr. Sarah"></div>
+                <div class="form-group"><label>Designation</label><input type="text" id="doc-specialty-input" required
+                        placeholder="e.g. Dermatologist"></div>
+                <div class="form-group"><label>Years of Experience</label><input type="number" id="doc-exp-input"
+                        required placeholder="e.g. 5"></div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 15px;">Add to Directory</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="add-product-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px; padding: 30px; border-radius: 15px;">
+            <span class="close-btn" onclick="closeModal('add-product-modal')">&times;</span>
+            <h2 style="margin-bottom: 25px; color: #1a1a1a;">Catalog Single Product</h2>
+            <form id="add-product-form">
+                <div
+                    style="display: flex; gap: 20px; align-items: center; margin-bottom: 25px; background: #f8f9fa; padding: 15px; border-radius: 10px;">
+                    <div id="prod-preview"
+                        style="width: 70px; height: 70px; border-radius: 8px; background: #eee; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                        <i class="fa-solid fa-box" style="font-size: 1.5rem; color: #ccc;"></i>
+                    </div>
+                    <div>
+                        <input type="file" id="prod-file" accept="image/*" style="display: none;">
+                        <button type="button" class="btn btn-small"
+                            onclick="document.getElementById('prod-file').click()" style="background: #333;">Choose
+                            Product Photo</button>
+                    </div>
+                </div>
+                <div class="form-group"><label>Product Name</label><input type="text" id="prod-name-input" required
+                        placeholder="e.g. Glow Serum"></div>
+                <div class="form-group"><label>Price (Rs.)</label><input type="number" id="prod-price-input" required
+                        placeholder="e.g. 599"></div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="prod-category-input"
+                        style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+                        <option value="skincare">Skincare</option>
+                        <option value="haircare">Haircare</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; margin-top: 15px;">Product Add
+                    Successfully</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-overlay" class="modal-overlay"></div>
+
+    <script>
+        window.onload = function () {
+            const loggedInAgent = localStorage.getItem('glowcare_agent_name');
+            if (loggedInAgent) {
+                document.getElementById('agent-auth-overlay').style.display = 'none';
+                document.getElementById('agent-display-name').textContent = 'Official Agent: ' + loggedInAgent;
+            }
+            refreshAll();
+            // Refresh stats every 30 seconds
+            setInterval(refreshAll, 30000);
+        };
+
+        function refreshAll() {
+            loadDashboardStats();
+            loadOrders();
+            loadSpecialists();
+            loadProducts();
+        }
+
+        async function loadDashboardStats() {
+            try {
+                const res = await fetch('/api/orders/dashboard-stats');
+                if (res.ok) {
+                    const stats = await res.json();
+                    document.getElementById('stat-total-sales').textContent = 'Rs. ' + stats.totalRevenue.toLocaleString();
+                    document.getElementById('stat-total-orders').textContent = stats.totalOrders;
+                    document.getElementById('stat-total-doctors').textContent = stats.totalAgents;
+                    // Products would need a backend repo too for full sync, but we'll focus on orders/revenue as requested
+                }
+            } catch (err) {
+                console.error('Error loading stats:', err);
+            }
+        }
+
+        // Image Preview Logic
+        function setupPreview(fileInputId, previewId, placeholderIcon) {
+            document.getElementById(fileInputId).addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        document.getElementById(previewId).innerHTML = `<img src="${ev.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        setupPreview('doc-file', 'doc-preview', 'fa-user-doctor');
+        setupPreview('prod-file', 'prod-preview', 'fa-box');
+
+        async function loadOrders() {
+            try {
+                const res = await fetch('/api/orders/all');
+                if (!res.ok) return;
+                const orders = await res.json();
+                const tbody = document.getElementById('orders-table-body');
+                
+                tbody.innerHTML = '';
+                // Reverse to show newest first
+                orders.sort((a,b) => b.id - a.id).forEach(order => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${order.orderNumber || order.id}</td>
+                        <td><strong>${order.customerName}</strong><br>${order.customerEmail}</td>
+                        <td style="max-width:200px; font-size:0.8rem;">${order.shippingAddress}</td>
+                        <td style="font-size:0.8rem;">${order.items.map(i => `${i.name} (x${i.quantity})`).join(', ')}</td>
+                        <td style="font-weight:700;">Rs. ${order.totalAmount}</td>
+                        <td><span class="status-badge status-${order.status.toLowerCase()}">${order.status}</span></td>
+                        <td>
+                            ${order.status === 'Processing' ? 
+                                `<button class="btn-small" onclick="updateOrderStatus(${order.id}, 'Shipped')">Ship Now</button>` : 
+                                `<span style="color:green;"><i class="fa-solid fa-check"></i> Done</span>`
+                            }
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('Error loading orders:', err);
+            }
+        }
+
+        function loadSpecialists() {
+            const doctors = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+            const tbody = document.getElementById('doctor-table-body');
+            document.getElementById('stat-total-doctors').textContent = doctors.length;
+
+            if (doctors.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: #999;">No specialists registered in the directory.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = doctors.map(d => `
+                <tr>
+                    <td><img src="${d.image}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;" onerror="this.src='images/default-doc.png'"></td>
+                    <td><strong>${d.name}</strong></td>
+                    <td>${d.designation || d.specialty}</td>
+                    <td>${d.experience || 'N/A'} Yrs</td>
+                    <td style="display: flex; align-items: center; gap: 15px;">
+                        <span style="color:green; font-size: 0.8rem;"><i class="fa-solid fa-circle" style="font-size:0.6rem;"></i> Online</span>
+                        <button class="btn-small" onclick="deleteSpecialist('${d.id}')" style="background:#e57373; border:none; padding:4px 8px;">Remove</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function loadProducts() {
+            const addedProducts = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
+            const baseProducts = [
+                { name: 'Radiance Serum', price: 899, category: 'skincare', image: 'images/p1.png', isFixed: true }
+            ];
+            const products = [...addedProducts, ...baseProducts];
+            const tbody = document.getElementById('product-table-body');
+            document.getElementById('stat-total-products').textContent = products.length;
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td><img src="${p.image}" style="width:40px; height:40px; border-radius:6px; object-fit:cover;" onerror="this.src='https://via.placeholder.com/40?text=Box'"></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td><span style="text-transform:capitalize;">${p.category}</span></td>
+                    <td style="font-weight:700;">
+                        Rs. ${p.price} 
+                        ${!p.isFixed ? `<button class="btn-small" onclick="deleteProduct('${p.id}')" style="margin-left:15px; background:#e57373; border:none; padding:4px 8px;">Delete</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        document.getElementById('add-doctor-form').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('doc-name-input').value;
+            const designation = document.getElementById('doc-specialty-input').value;
+            const experience = document.getElementById('doc-exp-input').value;
+
+            let imageUrl = 'images/default-doc.png';
+            const fileInput = document.getElementById('doc-file');
+            if (fileInput.files[0]) {
+                imageUrl = await new Promise(r => {
+                    const reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
+
+            const newDoc = { id: 'DOC-' + Date.now(), name, designation, experience, image: imageUrl };
+            let docs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+            docs.unshift(newDoc);
+            localStorage.setItem('glowcare_added_specialists', JSON.stringify(docs));
+
+            refreshAll();
+            closeModal('add-doctor-modal');
+            this.reset();
+            document.getElementById('doc-preview').innerHTML = '<i class="fa-solid fa-user-doctor" style="font-size: 1.5rem; color: #ccc;"></i>';
+            alert('Specialist Onboarded Successfully! 💉');
+        };
+
+        document.getElementById('add-product-form').onsubmit = async function (e) {
+            e.preventDefault();
+            const name = document.getElementById('prod-name-input').value;
+            const price = parseFloat(document.getElementById('prod-price-input').value);
+            const category = document.getElementById('prod-category-input').value;
+
+            let imageUrl = 'https://via.placeholder.com/300x400?text=Product';
+            const fileInput = document.getElementById('prod-file');
+            if (fileInput.files[0]) {
+                imageUrl = await new Promise(r => {
+                    const reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
+
+            const newProd = { id: 'P-' + Date.now(), name, price, category, image: imageUrl, isNew: true };
+            let products = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
+            products.unshift(newProd);
+            localStorage.setItem('glowcare_added_products', JSON.stringify(products));
+
+            refreshAll();
+            closeModal('add-product-modal');
+            this.reset();
+            document.getElementById('prod-preview').innerHTML = '<i class="fa-solid fa-box" style="font-size: 1.5rem; color: #ccc;"></i>';
+            alert('Product added successfully! ✨');
+        };
+
+        async function updateOrderStatus(orderId, newStatus) {
+            try {
+                const res = await fetch(`/api/orders/${orderId}/status`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                if (res.ok) {
+                    showToast ? showToast('Status updated!') : alert('Status updated!');
+                    refreshAll();
+                }
+            } catch (err) {
+                console.error('Error updating status:', err);
+            }
+        }
+
+        function deleteProduct(id) {
+            if (confirm('Permanently remove this product from the public catalog?')) {
+                let products = JSON.parse(localStorage.getItem('glowcare_added_products')) || [];
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('glowcare_added_products', JSON.stringify(products));
+                refreshAll();
+            }
+        }
+
+        function deleteSpecialist(id) {
+            if (confirm('Remove this specialist from the consultation directory?')) {
+                let docs = JSON.parse(localStorage.getItem('glowcare_added_specialists')) || [];
+                docs = docs.filter(d => d.id !== id);
+                localStorage.setItem('glowcare_added_specialists', JSON.stringify(docs));
+                refreshAll();
+            }
+        }
+
+        const AGENT_CREDENTIALS = {
+            email: "agent@gmail.com",
+            password: "agent@123"
+        };
+
+        document.getElementById('agent-login-form').onsubmit = function (e) {
+            e.preventDefault();
+            const email = document.getElementById('agent-email').value;
+            const pass = document.getElementById('agent-password').value;
+
+            if (email === AGENT_CREDENTIALS.email && pass === AGENT_CREDENTIALS.password) {
+                localStorage.setItem('glowcare_agent_name', "Official Agent");
+                sessionStorage.setItem('glowcare_agent_auth', 'true');
+                location.reload();
+            } else {
+                alert('Invalid Agent Credentials. Please contact System Admin.');
+            }
+        };
+
+        function logoutAgent() {
+            localStorage.removeItem('glowcare_agent_name');
+            sessionStorage.removeItem('glowcare_agent_auth');
+            location.reload();
+        }
+
+        function showSection(id) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            document.getElementById(id + '-section').classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function openDoctorModal() { document.getElementById('add-doctor-modal').classList.add('active'); document.getElementById('modal-overlay').classList.add('active'); }
+        function openProductModal() { document.getElementById('add-product-modal').classList.add('active'); document.getElementById('modal-overlay').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); document.getElementById('modal-overlay').classList.remove('active'); }
+    </script>
+</body>
+
+</html>

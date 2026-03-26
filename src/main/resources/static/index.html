@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLOWCARE India | Organic Superfoods for Skin and Hair</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Announcement Bar -->
+    <div class="announcement-bar">
+        <span>India's First Organic Superfoods Based Skin & Hair Care | Shop Now</span>
+    </div>
+
+    <!-- Header -->
+    <header id="main-header">
+        <div class="logo">
+            <a href="index.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                <img src="images/logo.png" alt="GLOWCARE Logo" style="height: 40px; margin-right: 10px;">
+                <h1>GLOWCARE</h1>
+            </a>
+        </div>
+        <nav>
+            <ul>
+                <li class="dropdown">
+                    <a href="javascript:void(0)" class="dropbtn">Collection <i class="fa-solid fa-chevron-down"
+                            style="font-size: 0.6rem; margin-left: 2px;"></i></a>
+                    <div class="dropdown-content">
+                        <a href="skincare.html">Skin Care</a>
+                        <a href="haircare.html">Hair Care</a>
+                    </div>
+                </li>
+                <li><a href="doctor.html">Consult</a></li>
+                <li><a href="ingredients.html" class="nav-highlight-link"><i class="fa-solid fa-flask"></i> Interaction
+                        Checker</a></li>
+                <li><a href="javascript:void(0)" id="open-ritual" style="font-weight: 700;">Ritual</a></li>
+                <li><a href="javascript:void(0)" id="open-skinsync" style="font-weight: 700;"><i
+                            class="fa-solid fa-dna"></i> Skin-Sync</a></li>
+                <li><a href="lab.html">Glow Lab</a></li>
+            </ul>
+        </nav>
+        <div class="header-icons">
+            <a href="#"><i class="fa-solid fa-magnifying-glass"></i></a>
+            <div class="user-dropdown" id="login-dropdown">
+                <a href="javascript:void(0)" id="user-icon"><i class="fa-solid fa-user"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-user-shield"></i> Customer Login</a>
+                    <a href="javascript:void(0)" onclick="openRegister()"><i class="fa-solid fa-user-plus"></i> Register</a>
+                </div>
+            </div>
+            <div class="user-dropdown" id="profile-dropdown" style="display: none;">
+                <a href="javascript:void(0)" id="profile-icon-btn"><i class="fa-solid fa-circle-user"
+                        style="color: #8b6e4e;"></i></a>
+                <div class="login-dropdown-content">
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-id-card"></i> View
+                        Profile</a>
+                    <a href="javascript:void(0)" onclick="openAuth()"><i class="fa-solid fa-clock-history"></i>
+                        History</a>
+                    <a href="javascript:void(0)" id="nav-logout-btn"><i class="fa-solid fa-right-from-bracket"></i>
+                        Logout</a>
+                </div>
+            </div>
+            <a href="javascript:void(0)" id="cart-icon"><i class="fa-solid fa-cart-shopping"></i><span
+                    class="cart-count">0</span></a>
+            <button id="mobile-menu-trigger" class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </header>
+
+    <!-- Search Overlay -->
+    <div id="search-overlay" class="search-overlay">
+        <button id="close-search" class="close-btn">&times;</button>
+        <div class="search-content">
+            <h2>Search GlowCare</h2>
+            <form id="search-form">
+                <input type="text" id="search-input" placeholder="Search for products, ingredients, or skin concerns..."
+                    autocomplete="off">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+            <div id="search-results" class="search-results">
+                <!-- Results will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <!-- Hero Slides -->
+        <div class="hero-slider">
+            <!-- Slide 1: Skincare -->
+            <div class="hero-slide active" style="background-image: url('images/hero-bg-forest.jpg');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <span class="hero-tag">Best Seller Collection</span>
+                    <h2>Superfoods For <br>Your Skin</h2>
+                    <p>Experience the power of Astaxanthin, 6000x stronger than Vitamin C. Truly organic, scientifically
+                        validated, and ethically crafted.</p>
+                    <div class="hero-btns">
+                        <a href="#shop" class="btn">Shop Collection</a>
+                        <button id="click-scan-trigger" class="btn btn-highlight"><i class="fa-solid fa-camera"></i>
+                            Click & Scan</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Slide 2: Haircare -->
+            <div class="hero-slide" style="background-image: url('images/hero-bg-brand.png');">
+                <div class="hero-overlay"></div>
+                <div class="hero-content">
+                    <span class="hero-tag">New Haircare Collection</span>
+                    <h2>Nature's Power <br>For Your Hair</h2>
+                    <p>Revitalize your tresses with potent botanical infusions and superfood extracts. Healthier,
+                        thicker hair starts here.</p>
+                    <div class="hero-btns">
+                        <a href="haircare.html" class="btn">Explore Haircare</a>
+                        <button id="click-scan-trigger-hair" class="btn btn-highlight"><i
+                                class="fa-solid fa-camera"></i> Click & Scan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Nav -->
+        <div class="hero-nav">
+            <button class="nav-prev"><i class="fa-solid fa-chevron-left"></i></button>
+            <button class="nav-next"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="hero-dots">
+            <span class="dot active"></span>
+            <span class="dot"></span>
+        </div>
+    </section>
+
+    <!-- Featured Section -->
+    <section id="shop" class="section bg-white">
+        <div class="section-title">
+            <span class="serif"
+                style="font-size: 1.2rem; color: var(--accent-dark); display: block; margin-bottom: 10px;">Best
+                Sellers</span>
+            <h2>Customers' Most Loved</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="product-grid">
+            <!-- Product 1 -->
+            <div class="product-card" data-id="1" data-name="Face Wash" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/face-wash.png" alt="Face Wash" class="product-image">
+                    <div class="product-badges">
+                        <span class="badge badge-sale">BOGO</span>
+                    </div>
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Wash</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+            <!-- Product 2 -->
+            <div class="product-card" data-id="2" data-name="Face Cream" data-price="449">
+                <div class="product-image-wrapper">
+                    <img src="images/face-cream.png" alt="Face Cream" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Cream</h3>
+                    <p class="price">Rs. 449.00</p>
+                </div>
+            </div>
+            <!-- Product 3 -->
+            <div class="product-card" data-id="3" data-name="Facial Oil" data-price="599">
+                <div class="product-image-wrapper">
+                    <img src="images/facial-oil.png" alt="Facial Oil" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Facial Oil</h3>
+                    <p class="price">Rs. 599.00</p>
+                </div>
+            </div>
+            <!-- Product 4 -->
+            <div class="product-card" data-id="4" data-name="Face Moisturizer" data-price="699">
+                <div class="product-image-wrapper">
+                    <img src="images/face-moisturizer.png" alt="Face Moisturizer" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Moisturizer</h3>
+                    <p class="price">Rs. 699.00</p>
+                </div>
+            </div>
+            <!-- Product 5 -->
+            <div class="product-card" data-id="5" data-name="Face Mist" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/face-mist.png" alt="Face Mist" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Mist</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+            <!-- Product 6 -->
+            <div class="product-card" data-id="6" data-name="Sunscreen" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/sunscreen.png" alt="Sunscreen" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Sunscreen</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Section -->
+    <section class="section bg-light">
+        <div class="section-title">
+            <span class="serif" style="color: var(--accent-dark); font-size: 1.2rem;">India's First</span>
+            <h2>Our Superfoods</h2>
+            <div class="divider"></div>
+            <p>We combine ancient botanical wisdom with modern skin science to create high-performance organic products.
+            </p>
+        </div>
+        <div class="why-grid">
+            <div class="why-item">
+                <i class="fa-solid fa-leaf"></i>
+                <h4>Astaxanthin</h4>
+                <p>An antioxidant that is 6000x stronger than Vitamin C and 100x more powerful than Vitamin E.</p>
+            </div>
+            <div class="why-item">
+                <i class="fa-solid fa-flask-vial"></i>
+                <h4>Reishi Mushroom</h4>
+                <p>The "mushroom of immortality" known for its deep hydration and skin-soothing properties.</p>
+            </div>
+            <div class="why-item">
+                <i class="fa-solid fa-sun"></i>
+                <h4>Shiitake</h4>
+                <p>Rich in kojic acid, it helps fade dark spots and encourages skin renewal for a brighter complexion.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skincare Section -->
+    <section id="skincare" class="section bg-white">
+        <div class="section-title">
+            <h2>Premium Skincare</h2>
+            <div class="divider"></div>
+            <p>Harnessing the 6000x antioxidant power of Astaxanthin for radiant, healthy skin.</p>
+        </div>
+        <div class="product-grid">
+            <!-- Product 1: Face Serum -->
+            <div class="product-card" data-id="101" data-name="Face Serum" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/face-serum.png" alt="Face Serum" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Serum</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+            <!-- Product 2: Face Mask -->
+            <div class="product-card" data-id="102" data-name="Face Mask" data-price="599">
+                <div class="product-image-wrapper">
+                    <img src="images/face-mask.png" alt="Face Mask" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Face Mask</h3>
+                    <p class="price">Rs. 599.00</p>
+                </div>
+            </div>
+            <!-- Product 3: Vitamin C Toner -->
+            <div class="product-card" data-id="103" data-name="Vitamin C Toner" data-price="699">
+                <div class="product-image-wrapper">
+                    <img src="images/vitamin-c-toner.png" alt="Vitamin C Toner" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Vitamin C Toner</h3>
+                    <p class="price">Rs. 699.00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Haircare Section -->
+    <section id="haircare" class="section bg-light">
+        <div class="section-title">
+            <h2>Organic Haircare</h2>
+            <div class="divider"></div>
+            <p>Revitalize your tresses with the same superfood power. Pure, potent, and transformative.</p>
+        </div>
+        <div class="product-grid">
+            <!-- Product 1: Hair Oil -->
+            <div class="product-card" data-id="201" data-name="Hair Oil" data-price="499">
+                <div class="product-image-wrapper">
+                    <img src="images/hair-oil.png" alt="Hair Oil" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Hair Oil</h3>
+                    <p class="price">Rs. 499.00</p>
+                </div>
+            </div>
+            <!-- Product 2: Shampoo -->
+            <div class="product-card" data-id="202" data-name="Shampoo" data-price="599">
+                <div class="product-image-wrapper">
+                    <img src="images/hair-shampoo.png" alt="Shampoo" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Shampoo</h3>
+                    <p class="price">Rs. 599.00</p>
+                </div>
+            </div>
+            <!-- Product 3: Hair Wax -->
+            <div class="product-card" data-id="203" data-name="Hair Wax" data-price="699">
+                <div class="product-image-wrapper">
+                    <img src="images/hair-wax.png" alt="Hair Wax" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Hair Wax</h3>
+                    <p class="price">Rs. 699.00</p>
+                </div>
+            </div>
+            <!-- Product 4: Conditioner -->
+            <div class="product-card" data-id="204" data-name="Conditioner" data-price="799">
+                <div class="product-image-wrapper">
+                    <img src="images/hair-conditioner.png" alt="Conditioner" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Conditioner</h3>
+                    <p class="price">Rs. 799.00</p>
+                </div>
+            </div>
+            <!-- Product 5: Dandruff Free Oil -->
+            <div class="product-card" data-id="205" data-name="Dandruff Free Oil" data-price="699">
+                <div class="product-image-wrapper">
+                    <img src="images/dandruff-free-oil.png" alt="Dandruff Free Oil" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Dandruff Free Oil</h3>
+                    <p class="price">Rs. 699.00</p>
+                </div>
+            </div>
+            <!-- Product 6: Heat Protection Spray -->
+            <div class="product-card" data-id="206" data-name="Heat Protection Spray" data-price="799">
+                <div class="product-image-wrapper">
+                    <img src="images/heat-protection-spray.png" alt="Heat Protection Spray" class="product-image">
+                    <div class="quick-add">Quick Add +</div>
+                </div>
+                <div class="product-info">
+                    <h3>Heat Protection Spray</h3>
+                    <p class="price">Rs. 799.00</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section bg-white">
+        <div class="section-title">
+            <h2>Our Story</h2>
+            <div class="divider"></div>
+        </div>
+        <div style="max-width: 800px; margin: 0 auto; text-align: center; line-height: 1.8; color: #555;">
+            <p>GLOWCARE was born from a simple yet powerful idea: that nature holds the most potent secrets for skin
+                health.
+                We specialize in harnessing the power of <strong>Astaxanthin</strong>—a revolutionary superfood that
+                is
+                thousands of times more effective than conventional antioxidants.</p>
+            <p style="margin-top: 20px;">Our journey began in the pristine landscapes of India, where we combined
+                ancient botanical wisdom with cutting-edge dermatology. Today, GLOWCARE stands as a beacon of
+                purity, efficacy, and ethical beauty.</p>
+        </div>
+    </section>
+
+    <!-- Blogs Section -->
+    <section id="blogs" class="section bg-light">
+        <div class="section-title">
+            <h2>Skin Rituals & Wisdom</h2>
+            <div class="divider"></div>
+        </div>
+        <div class="product-grid">
+            <div class="product-card blog-card" onclick="openBlog('blog-astaxanthin')">
+                <div class="product-image-wrapper">
+                    <img src="images/blog-1.png" alt="Astaxanthin" class="product-image blog-img">
+                    <div class="blog-date">Mar 05, 2026</div>
+                </div>
+                <div class="product-info">
+                    <span class="blog-category">Skincare Tips</span>
+                    <h3 class="blog-title">The Magic of Astaxanthin: Why Your Skin Needs It</h3>
+                    <p class="blog-excerpt">Discover why this super-antioxidant is better than Vitamin C...</p>
+                    <a href="javascript:void(0)" class="read-more-link">Read More →</a>
+                </div>
+            </div>
+            <div class="product-card blog-card" onclick="openBlog('blog-reishi')">
+                <div class="product-image-wrapper">
+                    <img src="images/blog-2.png" alt="Reishi" class="product-image blog-img">
+                    <div class="blog-date">Feb 28, 2026</div>
+                </div>
+                <div class="product-info">
+                    <span class="blog-category">New Launch</span>
+                    <h3 class="blog-title">Mushrooms in Skincare: A Deep Dive into Reishi</h3>
+                    <p class="blog-excerpt">The "Mushroom of Immortality" is the new hydration hero...</p>
+                    <a href="javascript:void(0)" class="read-more-link">Read More →</a>
+                </div>
+            </div>
+            <div class="product-card blog-card" onclick="openBlog('blog-packaging')">
+                <div class="product-image-wrapper">
+                    <img src="images/blog-3.png" alt="Packaging" class="product-image blog-img">
+                    <div class="blog-date">Feb 20, 2026</div>
+                </div>
+                <div class="product-info">
+                    <span class="blog-category">Eco-Beauty</span>
+                    <h3 class="blog-title">Sustainable Packaging: Our Footprint on Earth</h3>
+                    <p class="blog-excerpt">How we are redesigning beauty to save our planet...</p>
+                    <a href="javascript:void(0)" class="read-more-link">Read More →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section bg-dark-section">
+        <div class="section-title">
+            <h2>Get in Touch</h2>
+            <div class="divider"></div>
+            <p>Have questions? We're here to help you on your glow journey.</p>
+        </div>
+        <div style="max-width: 600px; margin: 0 auto;">
+            <form style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" placeholder="Your Name"
+                    style="padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+                <input type="email" placeholder="Your Email"
+                    style="padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+                <textarea placeholder="Your Message" rows="5"
+                    style="padding: 12px; border: 1px solid #ddd; border-radius: 4px; resize: none;"></textarea>
+                <button type="submit" class="btn" style="width: 100%;">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+    <section class="section">
+        <div class="testimonial-card">
+            <i class="fa-solid fa-quote-left"></i>
+            <p class="testimonial-content">GLOWCARE products are amazing! Even with my dry, eczema-prone skin, they
+                deliver
+                exactly what’s promised. Truly the best Indian skincare I’ve tried.</p>
+            <p class="testimonial-author">Minita</p>
+            <p class="testimonial-role">Verified Customer</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-logo">
+                <h2>GLOWCARE</h2>
+                <p style="opacity: 0.7; max-width: 300px; margin-top: 20px;">India’s first organic superfoods based
+                    Skin
+                    and Hair Care Crafters. Ethical, transparent, and powerful.</p>
+                <div class="social-links" style="margin-top: 30px;">
+                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-pinterest"></i></a>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>About</h4>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Astaxanthin</a></li>
+                    <li><a href="#">Environment Friendly</a></li>
+                    <li><a href="doctor.html">Consult Doctor</a></li>
+                    <li><a href="doctor-join.html" style="color: var(--glow-gold); font-weight: 600;">Partner
+                            Program</a></li>
+                    <li><a href="lab.html">Glow Lab</a></li>
+                    <li><a href="dashboard.html">Agent Dashboard</a></li>
+                    <li><a href="admin.html" style="color: var(--accent-dark); font-weight: 600;">Admin Control</a>
+                    </li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Shop</h4>
+                <ul>
+                    <li><a href="skincare.html">Skincare</a></li>
+                    <li><a href="#">Bodycare</a></li>
+                    <li><a href="haircare.html">Haircare</a></li>
+                    <li><a href="#">Bestsellers</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px;">Sign up to get the latest skincare
+                    tips
+                    and exclusive offers.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address">
+                    <button type="submit"><i class="fa-solid fa-arrow-right"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 GLOWCARE India. Elevating self-care through superfoods.</p>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+                <a href="#" style="color: inherit; text-decoration: none;">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Drawer -->
+    <div id="cart-drawer" class="cart-drawer">
+        <div class="cart-drawer-header">
+            <h3>Your Cart</h3>
+            <button id="close-cart" class="close-btn">&times;</button>
+        </div>
+        <div id="cart-items" class="cart-items">
+            <!-- Items will be injected here -->
+            <p class="empty-cart-msg">Your cart is currently empty.</p>
+        </div>
+        <div class="cart-drawer-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span id="cart-total-amount">Rs. 0.00</span>
+            </div>
+            <button class="btn checkout-btn">Checkout</button>
+        </div>
+    </div>
+    <div id="drawer-overlay" class="drawer-overlay"></div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span id="close-checkout" class="close-btn">&times;</span>
+
+            <div id="checkout-form-container">
+                <h2>Checkout</h2>
+                <div class="checkout-steps">
+                    <form id="checkout-form">
+                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="ship-name" required placeholder="John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" id="ship-email" required placeholder="john@example.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Shipping Address</label>
+                            <textarea id="ship-address" required placeholder="123 Street Name, Area, City - PinCode"
+                                style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit;"></textarea>
+                        </div>
+                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" id="ship-phone" required placeholder="+91 XXXXX XXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label>Payment Method</label>
+                                <select id="payment-method"
+                                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                                    <option value="cod">Cash on Delivery</option>
+                                    <option value="card">Credit / Debit Card</option>
+                                    <option value="upi">UPI / Net Banking</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="card-details"
+                            style="display: none; margin-top: 15px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+                            <input type="text" placeholder="Card Number" style="margin-bottom: 10px;">
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" placeholder="MM/YY">
+                                <input type="text" placeholder="CVV">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">Place
+                            Order</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="checkout-success" style="display: none; text-align: center; padding: 40px 0;">
+                <div
+                    style="width: 80px; height: 80px; background: #e8f5e9; color: #2e7d32; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 2.5rem;">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2>Order Placed Successfully!</h2>
+                <p style="color: var(--text-muted); margin: 15px 0 30px;">Thank you for shopping with GlowCare. Your
+                    order ID is <span id="order-id" style="font-weight: 600; color: var(--text-color);">#GC-9821</span>
+                </p>
+                <p>Our agent will process and ship your organic products shortly.</p>
+                <button class="btn" onclick="location.reload()" style="margin-top: 30px;">Continue Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Glowy AI Chatbot -->
+    <div id="glowy-chatbot" class="glowy-widget">
+        <div id="glowy-header" class="glowy-header">
+            <div class="glowy-title">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Glowy AI Asst</span>
+            </div>
+            <div class="glowy-controls">
+                <button id="minimize-glowy"><i class="fa-solid fa-minus"></i></button>
+                <button id="close-glowy"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </div>
+        <div id="glowy-body" class="glowy-body">
+            <div class="glowy-msg bot">
+                Hello! I'm <strong>Glowy</strong>, your organic skincare expert. ✨ <br><br>
+                Ask me anything about skin concerns, hair care, or product recommendations! How can I help you glow
+                today?
+            </div>
+        </div>
+        <div class="glowy-footer">
+            <form id="glowy-form">
+                <input type="text" id="glowy-input" placeholder="Ask Glowy about your skin..." autocomplete="off">
+                <button type="submit"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+    <div id="glowy-trigger" class="glowy-trigger">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+    </div>
+
+    <!-- Unique Feature: The Biological Skin-Sync Dial -->
+    <div id="skinsync-modal" class="skinsync-overlay">
+        <div class="skinsync-container">
+            <button id="close-skinsync-btn" class="skinsync-close">&times;</button>
+            <div class="skinsync-header">
+                <span class="skinsync-badge">Quantum Dermal Analysis</span>
+                <h1>Circadian Skin-Sync</h1>
+                <p>Syncing your routine with your unique biological clock.</p>
+                <div id="skinsync-clock" class="digital-clock">00:00:00</div>
+
+                <div class="skin-type-config">
+                    <span>Dermal Configuration:</span>
+                    <div class="bio-tabs">
+                        <button class="bio-tab active" onclick="setSyncType('normal')">Normal/Oily</button>
+                        <button class="bio-tab" onclick="setSyncType('dry')">Dry/Dehydrated</button>
+                        <button class="bio-tab" onclick="setSyncType('sensitive')">Reactive/Sensitive</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="skinsync-main-grid">
+                <div class="skinsync-wheel-column">
+                    <div class="skinsync-wheel-wrapper">
+                        <div id="skinsync-wheel" class="skinsync-wheel">
+                            <div class="wheel-marker" style="transform: rotate(0deg)"><span>12 AM</span></div>
+                            <div class="wheel-marker" style="transform: rotate(90deg)"><span>6 AM</span></div>
+                            <div class="wheel-marker" style="transform: rotate(180deg)"><span>12 PM</span></div>
+                            <div class="wheel-marker" style="transform: rotate(270deg)"><span>6 PM</span></div>
+                            <div id="hour-hand" class="hour-hand"></div>
+                        </div>
+                    </div>
+                    <div class="sync-score-box">
+                        <div class="score-label">Live Sync Strength</div>
+                        <div class="score-bar">
+                            <div id="sync-score-fill" style="width: 85%;"></div>
+                        </div>
+                        <div id="sync-score-val">85% Aligned</div>
+                    </div>
+                </div>
+
+                <div class="skinsync-info-card">
+                    <div class="status-row">
+                        <span class="label">Current Biological State:</span>
+                        <span id="skin-bio-state" class="value">Detecting...</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="label">Environmental Climate:</span>
+                        <span id="skin-climate-state" class="value">Analyzing Atmos...</span>
+                    </div>
+                    <div class="insight-box">
+                        <i class="fa-solid fa-microscope"></i>
+                        <p id="skin-bio-insight">Calculating your skin's microscopic activity based on the current
+                            circadian
+                            hour...</p>
+                    </div>
+                    <div class="precision-recommendation">
+                        <h4>Precision Product Match:</h4>
+                        <div id="skinsync-match" class="match-item">
+                            <!-- Dynamic Match -->
+                            Searching database...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unique Feature: The Skin Rhythm Ritual -->
+    <div id="ritual-modal" class="ritual-overlay">
+        <div class="ritual-container">
+            <button id="close-ritual-btn" class="ritual-close">&times;</button>
+            <div id="ritual-setup" class="ritual-view active">
+                <div class="ritual-intro">
+                    <span class="ritual-tag">Limited Edition Feature</span>
+                    <h1>Begin Your Skincare Rhythm</h1>
+                    <p>A guided, 5-minute multi-sensory journey to maximize the potency of your organic superfood
+                        products.</p>
+                    <div class="ritual-options">
+                        <div class="ritual-opt morning active" onclick="selectRitual('morning')">
+                            <i class="fa-solid fa-sun"></i>
+                            <span>Morning Glow</span>
+                        </div>
+                        <div class="ritual-opt night" onclick="selectRitual('night')">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>Night Recovery</span>
+                        </div>
+                        <div class="ritual-opt hair" onclick="selectRitual('hair')">
+                            <i class="fa-solid fa-wind"></i>
+                            <span>Hair Vitality</span>
+                        </div>
+                    </div>
+                    <button id="start-ritual-timer" class="btn ritual-start-btn">Start Immersion</button>
+                </div>
+            </div>
+
+            <div id="ritual-active" class="ritual-view">
+                <div class="ritual-timer-ring">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" class="timer-bg"></circle>
+                        <circle cx="50" cy="50" r="45" class="timer-progress" id="ritual-circle"></circle>
+                    </svg>
+                    <div class="timer-display">
+                        <span id="ritual-time">00:00</span>
+                    </div>
+                </div>
+                <div class="ritual-guidance">
+                    <h2 id="ritual-step-title">Initializing...</h2>
+                    <p id="ritual-step-desc">Prepare your workspace and breathe deeply.</p>
+                </div>
+                <div class="ritual-product-tip">
+                    <i class="fa-solid fa-flask-vial"></i>
+                    <span id="ritual-tip">Use 2 drops of serum for maximum absorption.</span>
+                </div>
+            </div>
+
+            <div id="ritual-complete" class="ritual-view">
+                <div class="ritual-success">
+                    <div class="ritual-check"><i class="fa-solid fa-check"></i></div>
+                    <h2>Ritual Complete</h2>
+                    <p>Your skin is now synchronized with nature. Your glow will last all day.</p>
+                    <div style="margin-top: 30px;">
+                        <span style="font-size: 0.8rem; opacity: 0.7; display: block; margin-bottom: 10px;">Ritual
+                            Streak: 1 Day</span>
+                        <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;">
+                            <div style="width: 20%; height: 100%; background: #fff; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                    <button class="btn" style="background: white; color: black; margin-top: 40px;"
+                        onclick="location.reload()">Return Home</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Blog Post Modals -->
+    <div id="blog-astaxanthin" class="modal" style="z-index: 10005;">
+        <div class="modal-content" style="max-width: 800px; padding: 40px;">
+            <span class="close-btn" onclick="closeBlog('blog-astaxanthin')">&times;</span>
+            <img src="images/blog-1.png" alt="Astaxanthin"
+                style="width: 100%; border-radius: 12px; margin-bottom: 25px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">The Magic of
+                Astaxanthin</h2>
+            <div style="line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>Astaxanthin is the most powerful antioxidant known to science. Found primarily in microalgae, it
+                    is what gives salmon and flamingos their vibrant color. For human skin, it is a
+                    revolutionary shield against daily damage.</p>
+                <p style="margin-top: 15px;"><strong>Why is it better than Vitamin C?</strong> While Vitamin C is a
+                    great nutrient, Astaxanthin is 6,000 times stronger and more stable. It doesn't just neutralize
+                    free
+                    radicals; it creates a protective barrier across the entire cell membrane.</p>
+                <p style="margin-top: 15px;">GlowCare stabilizes this superfood in our Radiance Serums so you get
+                    deep protection while achieving a faster, longer-lasting glow.</p>
+                <div
+                    style="margin-top: 30px; padding: 20px; background: #fef9f5; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+                    <img src="images/face-serum.png" style="height: 60px; width: 60px; object-fit: contain;">
+                    <div>
+                        <h4 style="margin: 0; font-size: 0.9rem;">Featured Product</h4>
+                        <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">Radiance Serum with Astaxanthin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blog-reishi" class="modal" style="z-index: 10005;">
+        <div class="modal-content" style="max-width: 800px; padding: 40px;">
+            <span class="close-btn" onclick="closeBlog('blog-reishi')">&times;</span>
+            <img src="images/blog-2.png" alt="Reishi Mushroom"
+                style="width: 100%; border-radius: 12px; margin-bottom: 25px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">The Power of
+                Reishi Mushrooms</h2>
+            <div style="line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>Known as the "Mushroom of Immortality" in traditional medicine, Reishi (Ganoderma lucidum)
+                    has become a cornerstone for high-performance skinsync rituals.</p>
+                <p style="margin-top: 15px;"><strong>The Hydration Hero:</strong> Reishi is packed with
+                    beta-glucans, which are even more effective at locking in moisture than hyaluronic acid. This
+                    makes it perfect for repairing the skin barrier and soothing inflammation.</p>
+                <p style="margin-top: 15px;">At GlowCare, we include Reishi in our Face Masks to ensure your skin
+                    stays hydrated and resilient against environmental stressors.</p>
+                <div
+                    style="margin-top: 30px; padding: 20px; background: #fef9f5; border-radius: 12px; display: flex; align-items: center; gap: 15px;">
+                    <img src="images/face-mask.png" style="height: 60px; width: 60px; object-fit: contain;">
+                    <div>
+                        <h4 style="margin: 0; font-size: 0.9rem;">Featured Product</h4>
+                        <p style="margin: 5px 0 0; font-size: 0.8rem; color: #666;">Reishi Infused Hydration Mask</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="blog-packaging" class="modal" style="z-index: 10005;">
+        <div class="modal-content" style="max-width: 800px; padding: 40px;">
+            <span class="close-btn" onclick="closeBlog('blog-packaging')">&times;</span>
+            <img src="images/blog-3.png" alt="Sustainable Packaging"
+                style="width: 100%; border-radius: 12px; margin-bottom: 25px;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 2.2rem; margin-bottom: 20px;">
+                Eco-Conscious Packaging</h2>
+            <div style="line-height: 1.8; color: #444; font-size: 1.05rem;">
+                <p>At GlowCare, we believe that beauty shouldn't come at the cost of the planet.
+                    Our packaging is 100% recyclable, and we use biodegradable inks and sustainable materials.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Click & Scan Feature Modal -->
+    <div id="scan-modal" class="scan-overlay">
+        <div class="scan-container">
+            <button id="close-scan-btn" class="scan-close">&times;</button>
+            <div id="scan-init" class="scan-view active">
+                <div class="scan-intro">
+                    <span class="scan-tag">AI Powered Analysis</span>
+                    <h1>Click & Scan</h1>
+                    <p>Instant skin and hair analysis using advanced machine learning. Get personal recommendations in
+                        seconds.</p>
+                    <div class="scan-options">
+                        <div class="scan-opt hair" id="start-hair-scan">
+                            <i class="fa-solid fa-wind"></i>
+                            <span>Hair Scan</span>
+                            <small>Analyze fall & health</small>
+                        </div>
+                        <div class="scan-opt skin" id="start-skin-scan">
+                            <i class="fa-solid fa-face-smile"></i>
+                            <span>Skin Scan</span>
+                            <small>Analyze acne & glow</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="scan-active" class="scan-view">
+                <div class="camera-wrapper">
+                    <video id="scan-video" autoplay playsinline muted></video>
+                    <div class="scan-overlay-graphic">
+                        <div class="scan-scanner-line"></div>
+                        <div class="scan-corners">
+                            <span></span><span></span><span></span><span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="scan-controls">
+                    <div class="scan-progress-container">
+                        <div id="scan-progress-bar"></div>
+                    </div>
+                    <p id="scan-status">Analyzing your features...</p>
+                </div>
+            </div>
+
+            <div id="scan-report" class="scan-view">
+                <div class="report-header">
+                    <div class="report-icon"><i id="report-type-icon" class="fa-solid fa-check"></i></div>
+                    <h2 id="report-title">Your Analysis Report</h2>
+                    <p id="report-date">Generated on Mar 5, 2026</p>
+                </div>
+                <div id="report-metrics" class="report-metrics">
+                    <!-- Metrics will be injected here -->
+                </div>
+                <div class="report-recommendations">
+                    <h3>Recommended For You</h3>
+                    <div id="report-products" class="report-product-grid">
+                        <!-- Products will be injected here -->
+                    </div>
+                </div>
+                <button class="btn scan-reset-btn" id="reset-scan-btn">Scan Again</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
